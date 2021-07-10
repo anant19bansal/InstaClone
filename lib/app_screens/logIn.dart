@@ -1,49 +1,49 @@
 import 'package:flutter/material.dart';
-import '../common/InstaLogo.dart';
-import '../common/MyCustomTextField.dart';
+import 'package:insta/common/InstaLogo.dart';
+import 'package:insta/common/MyCustomTextField.dart';
 
-class SignUp extends StatefulWidget {
+class LogIn extends StatefulWidget {
+  const LogIn({ Key? key }) : super(key: key);
 
   @override
-  _SignUpState createState() => _SignUpState();
+  _LogInState createState() => _LogInState();
 }
 
-class _SignUpState extends State<SignUp> {
+class _LogInState extends State<LogIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
         child: Center(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 60, 0, 0),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 50),
-                  child: InstaLogo(),
-                ),
-                MyCustomTextField(
-                  placeholder: 'Username',
-                ),
-                MyCustomTextField(
-                  placeholder: 'Email',
-                ),
-                MyCustomTextField(
-                  placeholder: 'Password',
-                ),
-                MyCustomTextField(
-                  placeholder: 'Confirm Password',
-                ),
-                Padding(
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 100, 0, 70),
+                child: InstaLogo()
+              ),
+              MyCustomTextField(placeholder: 'username'),
+              MyCustomTextField(placeholder: 'password'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 0, 13, 0),
+                    child: TextButton( 
+                      onPressed: () {} ,
+                      child: Text('Forgot Password?')),
+                  ),
+                ],
+              ),
+              Padding(
                   padding: const EdgeInsets.fromLTRB(0, 6, 0, 100),
                   child: ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(primary: Colors.blue[400]),
                     child: Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 135, vertical: 18),
-                      child: Text('Sign up'),
+                          EdgeInsets.symmetric(horizontal: 140, vertical: 18),
+                      child: Text('Log in'),
                     ),
                   ),
                 ),
@@ -75,12 +75,12 @@ class _SignUpState extends State<SignUp> {
                   children: [
                     Container(
                       margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                      child: Text('Have an Account?', style: TextStyle(color: Colors.grey[500]),),
+                      child: Text("Don't have an Account?", style: TextStyle(color: Colors.grey[500]),),
                     ),
                     Container(
                       child: TextButton(
                         onPressed: () {},
-                        child: Text('Log In.'),
+                        child: Text('Sign Up.'),
                       ),
                     ),
                   ],
@@ -99,8 +99,7 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                 )
-              ],
-            ),
+            ],
           ),
         ),
       ),
