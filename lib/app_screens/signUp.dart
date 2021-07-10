@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import '../common/InstaLogo.dart';
+import '../common/MyCustomTextField.dart';
 
 class SignUp extends StatefulWidget {
-  // const SignUp({Key? key}) : super(key: key);
 
   @override
   _SignUpState createState() => _SignUpState();
@@ -93,56 +94,6 @@ class _SignUpState extends State<SignUp> {
                   child: Text('Instagram from Facebook', style: TextStyle(color: Colors.grey[500]),),
                 )
               ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class InstaLogo extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Image(
-        height: 50,
-        image: NetworkImage(
-            'https://www.pngkey.com/png/full/828-8286178_mackeys-work-needs-no-elaborate-presentation-or-distracting.png'),
-      ),
-    );
-  }
-}
-
-class MyCustomTextField extends StatefulWidget {
-  final String placeholder;
-
-  const MyCustomTextField({Key? key, required this.placeholder})
-      : super(key: key);
-
-  @override
-  _MyCustomTextFieldState createState() => _MyCustomTextFieldState();
-}
-
-class _MyCustomTextFieldState extends State<MyCustomTextField> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-      child: TextField(
-        cursorColor: Colors.white,
-        cursorWidth: 0.5,
-        cursorHeight: 20,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.grey[900],
-          hintText: widget.placeholder,
-          contentPadding: EdgeInsets.symmetric(horizontal: 15),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-            borderSide: BorderSide(
-              width: 0,
-              style: BorderStyle.none,
             ),
           ),
         ),

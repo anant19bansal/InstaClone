@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../common/InstaLogo.dart';
 
 class FirstPage extends StatelessWidget {
   const FirstPage({ Key? key }) : super(key: key);
@@ -12,11 +13,7 @@ class FirstPage extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(0, 220, 0, 0),
           child: Column(
             children: [
-              Image(
-                // width: 500,
-                height: 60,
-                image: NetworkImage('https://www.pngkey.com/png/full/828-8286178_mackeys-work-needs-no-elaborate-presentation-or-distracting.png'),
-              ),
+              InstaLogo(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 130, 0, 0),
                 child: ElevatedButton(
