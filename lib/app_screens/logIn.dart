@@ -19,7 +19,7 @@ class _LogInState extends State<LogIn> {
           child: Column(
             children: [
               Container(
-                margin: EdgeInsets.fromLTRB(0, 100, 0, 70),
+                margin: EdgeInsets.fromLTRB(0, 100, 0, 80),
                 child: InstaLogo()
               ),
               MyCustomTextField(placeholder: 'username'),
@@ -79,7 +79,9 @@ class _LogInState extends State<LogIn> {
                     ),
                     Container(
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/sign-up');
+                        },
                         child: Text('Sign Up.'),
                       ),
                     ),

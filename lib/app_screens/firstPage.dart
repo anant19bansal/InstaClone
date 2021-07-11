@@ -17,10 +17,12 @@ class FirstPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 130, 0, 0),
                 child: ElevatedButton(
-                  onPressed: () {}, 
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/log-in');
+                  }, 
                   style: ElevatedButton.styleFrom(primary: Colors.blue[400]),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 120, vertical: 12),
+                    padding: EdgeInsets.symmetric(horizontal: 120, vertical: 16),
                     child: Text('Log in'),
                   ),
                 ),
@@ -28,10 +30,12 @@ class FirstPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
                 child: ElevatedButton(
-                  onPressed: () {}, 
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/sign-up');
+                  }, 
                   style: ElevatedButton.styleFrom(primary: Colors.blue[400]),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 116, vertical: 12),
+                    padding: EdgeInsets.symmetric(horizontal: 116, vertical: 16),
                     child: Text('Sign up'),
                   ),
                 ),

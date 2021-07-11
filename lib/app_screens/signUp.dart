@@ -79,7 +79,9 @@ class _SignUpState extends State<SignUp> {
                     ),
                     Container(
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/log-in');
+                        },
                         child: Text('Log In.'),
                       ),
                     ),
