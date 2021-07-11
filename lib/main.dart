@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insta/app_screens/homeScreen.dart';
 import 'package:insta/route_generator.dart';
 import 'app_screens/firstPage.dart';
 import 'app_screens/signUp.dart';
@@ -12,9 +13,10 @@ class Root extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // home: LogIn(),
+      debugShowCheckedModeBanner: false,
+      home: HomeScreen(),
       theme: ThemeData.dark(),
-      initialRoute: '/',
+      // initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }

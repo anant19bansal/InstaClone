@@ -13,7 +13,7 @@ class FirstPage extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(0, 220, 0, 0),
           child: Column(
             children: [
-              InstaLogo(),
+              InstaLogo(logoHeight: 50),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 130, 0, 0),
                 child: ElevatedButton(

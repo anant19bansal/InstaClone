@@ -20,7 +20,7 @@ class _LogInState extends State<LogIn> {
             children: [
               Container(
                 margin: EdgeInsets.fromLTRB(0, 100, 0, 80),
-                child: InstaLogo()
+                child: InstaLogo(logoHeight: 50,)
               ),
               MyCustomTextField(placeholder: 'username'),
               MyCustomTextField(placeholder: 'password'),

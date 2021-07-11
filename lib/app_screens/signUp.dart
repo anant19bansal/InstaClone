@@ -21,7 +21,7 @@ class _SignUpState extends State<SignUp> {
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 50),
-                  child: InstaLogo(),
+                  child: InstaLogo(logoHeight: 50,),
                 ),
                 MyCustomTextField(
                   placeholder: 'Username',
