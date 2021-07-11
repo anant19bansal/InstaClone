@@ -38,7 +38,9 @@ class _LogInState extends State<LogIn> {
               Padding(
                   padding: const EdgeInsets.fromLTRB(0, 6, 0, 100),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/home');
+                    },
                     style: ElevatedButton.styleFrom(primary: Colors.blue[400]),
                     child: Padding(
                       padding:
