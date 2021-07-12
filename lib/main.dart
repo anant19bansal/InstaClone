@@ -14,9 +14,9 @@ class Root extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // home: HomeScreen(),
+      home: HomeScreen(),
       theme: ThemeData.dark(),
-      initialRoute: '/',
+      // initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }

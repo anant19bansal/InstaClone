@@ -14,7 +14,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: getAppBar(),
-      body: HomePosts(),
+      body: SingleChildScrollView(
+        physics: ScrollPhysics(),
+        child: HomePosts(),
+      ),
       bottomNavigationBar: MyBottomNavBar(),
     );
   }
@@ -26,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   AppBar getAppBar() {
     return AppBar(
+        automaticallyImplyLeading: false,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -67,6 +71,36 @@ class HomePosts extends StatefulWidget {
 }
 
 class _HomePostsState extends State<HomePosts> {
+  List<Widget> posts = [
+    Post(
+      authorname: 'Sylvie',
+      postUrl: 'sylvie_post.png',
+      subTitle: 'Lamantis 1',
+      authorAvatar: 'Sylvie.jpg',
+      caption: 'This is the custom caption This is the custom caption',
+    ),
+    Post(
+      authorname: 'Wanda',
+      postUrl: 'wanda_post.jpg',
+      subTitle: 'Westview',
+      authorAvatar: 'wanda.jpg',
+      caption: 'This is the custom caption This is the custom caption',
+    ),
+    Post(
+      authorname: 'Dr. Strange',
+      postUrl: 'drStrange_post.jpg',
+      subTitle: 'New York',
+      authorAvatar: 'DrStrange.jpg',
+      caption: 'This is the custom caption This is the custom caption',
+    ),
+    Post(
+      authorname: 'Thor',
+      postUrl: 'thor_post.jpg',
+      subTitle: 'Asgard on Earth',
+      authorAvatar: 'Thor.jpg',
+      caption: 'This is the custom caption This is the custom caption',
+    ),
+  ];
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -78,20 +112,27 @@ class _HomePostsState extends State<HomePosts> {
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              getStories('assets/Loki.jpg', 'Your Story'),
-              getStories('assets/Sylvie.jpg', 'Sylvie'),
-              getStories('assets/Mobius.jpg', 'Mobius'),
-              getStories('assets/wanda.jpg', 'Wanda'),
-              getStories('assets/DrStrange.jpg', 'Dr. Strange'),
-              getStories('assets/Thor.jpg', 'Thor'),
-              getStories('assets/Danvers.jpg', 'Danvers'),
-              getStories('assets/Steve.jpg', 'Steve'),
-              getStories('assets/IronMan.jpg', 'Iron Man'),
+              getStories('Loki.jpg', 'Your Story'),
+              getStories('Sylvie.jpg', 'Sylvie'),
+              getStories('Mobius.jpg', 'Mobius'),
+              getStories('wanda.jpg', 'Wanda'),
+              getStories('DrStrange.jpg', 'Dr. Strange'),
+              getStories('Thor.jpg', 'Thor'),
+              getStories('Danvers.jpg', 'Danvers'),
+              getStories('Steve.jpg', 'Steve'),
+              getStories('IronMan.jpg', 'Iron Man'),
             ],
           ),
         ),
         Divider(height: 3.0),
-        Post(),
+        ListView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: posts.length,
+          itemBuilder: (context, index) {
+            return posts[index];
+          },
+        )
       ],
   ),
     );
@@ -100,7 +141,12 @@ class _HomePostsState extends State<HomePosts> {
 
 
 class Post extends StatefulWidget {
-  const Post({ Key? key }) : super(key: key);
+  final String authorname;
+  final String postUrl;
+  final String subTitle;
+  final String caption;
+  final String authorAvatar;
+  const Post({ Key? key , required this.authorname, required this.postUrl, this.subTitle="", this.caption="", required this.authorAvatar}) : super(key: key);
 
   @override
   _PostState createState() => _PostState();
@@ -116,16 +162,16 @@ class _PostState extends State<Post> {
         children: [
           ListTile(
             visualDensity: VisualDensity(horizontal: -3,vertical: -3),
-            leading: CircleAvatar(backgroundImage: AssetImage('assets/Sylvie.jpg'), radius: 22,),
-            title: Text('Sylvie', style: TextStyle(fontSize: 15,letterSpacing: letterSpace),),
-            subtitle: Text('Lamantis 1', style: TextStyle(fontSize: 10,letterSpacing: letterSpace),),
+            leading: CircleAvatar(backgroundImage: AssetImage('assets/${widget.authorAvatar}'), radius: 22,),
+            title: Text(widget.authorname, style: TextStyle(fontSize: 15,letterSpacing: letterSpace),),
+            subtitle: Text(widget.subTitle, style: TextStyle(fontSize: 10,letterSpacing: letterSpace),),
           ),
           Container(
             // height: 300,
             // width: ,
             child: Image(
               fit: BoxFit.fill,
-              image: NetworkImage('https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/screen-shot-2021-06-23-at-10-39-37-am-1624459325.png', ),
+              image: AssetImage('assets/${widget.postUrl}'),
             ),
 
           ),
@@ -158,7 +204,7 @@ class _PostState extends State<Post> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(child: Text('Sylvie This is the custom caption This is the custom caption',
+                    Expanded(child: Text('${widget.authorname} ${widget.caption}',
                         style:TextStyle(height: 1.4)
                       ),
                     ),
@@ -190,7 +236,7 @@ Widget getStories(String imgPath, String author){
                     border: Border.all(color: Colors.red, width: 3),
                   ),
                   child: CircleAvatar(
-                    backgroundImage: AssetImage(imgPath),
+                    backgroundImage: AssetImage('assets/$imgPath'),
                   ),
                 ),
                 Text(
