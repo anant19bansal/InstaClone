@@ -178,7 +178,22 @@ class _PostState extends State<Post> {
           Row(
             children: [
               IconButton(
-                onPressed: () {}, 
+                onPressed: () {
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: Colors.black,
+                      duration: Duration(seconds: 1),
+                      content: Container(
+                        margin: EdgeInsets.symmetric(vertical: 10),
+                        child: Text(
+                          'You have liked the post', 
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white, fontSize: 15),
+                        ),
+                      ),
+                    ),
+                  );
+                }, 
                 icon: Icon(Icons.favorite),
                 iconSize:27,
                 padding: EdgeInsets.fromLTRB(15, 7, 7, 0),
