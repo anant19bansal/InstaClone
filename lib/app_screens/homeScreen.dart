@@ -154,6 +154,8 @@ class Post extends StatefulWidget {
 
 class _PostState extends State<Post> {
   double letterSpace = 0.5;
+  bool isLiked = false;
+  var color = Colors.white;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -178,23 +180,37 @@ class _PostState extends State<Post> {
           Row(
             children: [
               IconButton(
+                color: color,
                 onPressed: () {
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      backgroundColor: Colors.black,
-                      duration: Duration(seconds: 1),
-                      content: Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        child: Text(
-                          'You have liked the post', 
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white, fontSize: 15),
+                  if (!isLiked) {
+                    setState(() {
+                      isLiked = true;
+                      color = Colors.red;
+                    });
+
+                    Scaffold.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: Colors.black,
+                        duration: Duration(seconds: 1),
+                        content: Container(
+                          margin: EdgeInsets.symmetric(vertical: 10),
+                          child: Text(
+                            'You have liked the post',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white, fontSize: 15),
+                          ),
                         ),
                       ),
-                    ),
-                  );
+                    );
+                  }else{
+                    setState(() {
+                      isLiked = false;
+                      color = Colors.white;
+                    });
+                  }
                 }, 
                 icon: Icon(Icons.favorite),
+
                 iconSize:27,
                 padding: EdgeInsets.fromLTRB(15, 7, 7, 0),
                 constraints: BoxConstraints(),),
