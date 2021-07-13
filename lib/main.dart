@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:insta/app_screens/homeScreen.dart';
+import 'package:insta/app_screens/searchPage.dart';
 import 'package:insta/route_generator.dart';
-import 'app_screens/firstPage.dart';
-import 'app_screens/signUp.dart';
-import 'app_screens/logIn.dart';
+// import 'app_screens/firstPage.dart';
+// import 'app_screens/signUp.dart';
+// import 'app_screens/logIn.dart';
 
 void main() => runApp(Root());
 
@@ -14,7 +15,8 @@ class Root extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      // home: HomeScreen(),
+      home: SearchPage(),
       theme: ThemeData.dark(),
       // initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
