@@ -18,9 +18,9 @@ class Root extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       // home: HomePage(),
       // home: SearchPage(),
-      home:MyBottomNavBar(),
+      // home:MyBottomNavBar(),
       theme: ThemeData.dark(),
-      // initialRoute: '/',
+      initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
