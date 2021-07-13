@@ -1,66 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:insta/common/InstaLogo.dart';
+import 'package:insta/app_bars/AppBarHomePage.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: getAppBar(),
-      body: SingleChildScrollView(
+    return Container(
+      color: Colors.black,
+      child: SingleChildScrollView(
         physics: ScrollPhysics(),
         child: HomePosts(),
       ),
-      bottomNavigationBar: MyBottomNavBar(),
     );
   }
-
-
-
-
-
-
-  AppBar getAppBar() {
-    return AppBar(
-        automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-              onPressed: () {},
-              padding: EdgeInsets.zero,
-              constraints: BoxConstraints(),
-              icon: Icon(Icons.camera_alt_outlined),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(30, 0, 0, 0),
-              child: InstaLogo(logoHeight: 30),
-            ),
-            Row(
-              // mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.tv_rounded),
-                ),
-                GestureDetector(
-                    onTap: () {print("arrow pressed");},
-                    child: Icon(Icons.call_made),
-                )
-              ],
-            ),
-          ],
-        ),
-      );
-  }
 }
+
+
 
 
 class HomePosts extends StatefulWidget {
@@ -277,54 +238,4 @@ Widget getStories(String imgPath, String author){
               ],
             ),
   );
-}
-
-
-class MyBottomNavBar extends StatefulWidget {
-  const MyBottomNavBar({ Key? key }) : super(key: key);
-
-  @override
-  _MyBottomNavBarState createState() => _MyBottomNavBarState();
-}
-
-class _MyBottomNavBarState extends State<MyBottomNavBar> {
-  int ind = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
-      // backgroundColor: Colors.black,
-      type: BottomNavigationBarType.fixed,
-      currentIndex: ind,
-      items: [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.search),
-          label: 'Search',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.add_box_outlined),
-          label: 'Add Post',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.favorite),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle),
-          label: 'Home',
-        )
-      ],
-      onTap: (index){
-        setState(() {
-          ind = index;
-        });
-      },
-    );
-  }
 }

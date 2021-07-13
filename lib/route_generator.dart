@@ -14,7 +14,7 @@ class RouteGenerator{
       case '/log-in':
         return MaterialPageRoute(builder: (context) => LogIn());
       case '/home':
-        return MaterialPageRoute(builder: (context) => HomeScreen());
+        return MaterialPageRoute(builder: (context) => HomePage());
       default:
         return MaterialPageRoute(builder: (context) => LogIn());
     }
