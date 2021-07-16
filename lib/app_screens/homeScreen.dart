@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:insta/app_bars/AppBarHomePage.dart';
+import 'package:insta/common/CustomCircularAvatar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -73,15 +73,15 @@ class _HomePostsState extends State<HomePosts> {
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              getStories('Loki.jpg', 'Your Story'),
-              getStories('Sylvie.jpg', 'Sylvie'),
-              getStories('Mobius.jpg', 'Mobius'),
-              getStories('wanda.jpg', 'Wanda'),
-              getStories('DrStrange.jpg', 'Dr. Strange'),
-              getStories('Thor.jpg', 'Thor'),
-              getStories('Danvers.jpg', 'Danvers'),
-              getStories('Steve.jpg', 'Steve'),
-              getStories('IronMan.jpg', 'Iron Man'),
+              getStories(imgPath: 'Loki.jpg', author:'Your Story', storyRing: true, storySeen: false),
+              getStories(imgPath: 'Sylvie.jpg', author:'Sylvie', storyRing: true, storySeen: false),
+              getStories(imgPath: 'Mobius.jpg', author:'Mobius', storyRing: true, storySeen: false),
+              getStories(imgPath: 'wanda.jpg', author:'Wanda', storyRing: true, storySeen: false),
+              getStories(imgPath: 'DrStrange.jpg', author:'Dr. Strange', storyRing: true, storySeen: false),
+              getStories(imgPath: 'Thor.jpg', author:'Thor', storyRing: true, storySeen: true),
+              getStories(imgPath: 'Danvers.jpg', author:'Danvers', storyRing: true, storySeen: true),
+              getStories(imgPath: 'Steve.jpg', author:'Steve', storyRing: true, storySeen: true),
+              getStories(imgPath: 'IronMan.jpg', author:'Iron Man', storyRing: true, storySeen: true),
             ],
           ),
         ),
@@ -93,11 +93,26 @@ class _HomePostsState extends State<HomePosts> {
           itemBuilder: (context, index) {
             return posts[index];
           },
-        )
+        ),
       ],
   ),
     );
   }
+}
+
+Widget getStories({required String imgPath, required String author, required bool storyRing, bool storySeen = false, double radius=35}){
+  EdgeInsetsGeometry? margin=EdgeInsets.fromLTRB(10, 0, 10, 5);
+  return Container(
+    child: Column(
+              children: [
+                CustomCircularAvatar(storyRing: storyRing, storySeen:storySeen, imgPath: imgPath, radius:radius, margin:margin),
+                Text(
+                  author,
+                  style: TextStyle(fontSize: 10,letterSpacing:0.5),
+                ),
+              ],
+            ),
+  );
 }
 
 
@@ -120,12 +135,15 @@ class _PostState extends State<Post> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
       child: Column(
         children: [
           ListTile(
             visualDensity: VisualDensity(horizontal: -3,vertical: -3),
-            leading: CircleAvatar(backgroundImage: AssetImage('assets/${widget.authorAvatar}'), radius: 22,),
+            leading: CustomCircularAvatar(
+              imgPath:'${widget.authorAvatar}', 
+              storyRing: false,
+              radius: 22,
+            ),
             title: Text(widget.authorname, style: TextStyle(fontSize: 15,letterSpacing: letterSpace),),
             subtitle: Text(widget.subTitle, style: TextStyle(fontSize: 10,letterSpacing: letterSpace),),
           ),
@@ -171,7 +189,6 @@ class _PostState extends State<Post> {
                   }
                 }, 
                 icon: Icon(Icons.favorite),
-
                 iconSize:27,
                 padding: EdgeInsets.fromLTRB(15, 7, 7, 0),
                 constraints: BoxConstraints(),),
@@ -200,8 +217,6 @@ class _PostState extends State<Post> {
                         style:TextStyle(height: 1.4)
                       ),
                     ),
-                    // SizedBox(width: 5,),
-                    // Expanded(child: Text('This is the custom caption This is the custom caption',)),
                   ],
                 )
               ],
@@ -214,28 +229,3 @@ class _PostState extends State<Post> {
   }
 }
 
-Widget getStories(String imgPath, String author){
-  return Container(
-    child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(10, 0, 10, 5),
-                  padding: EdgeInsets.all(3),
-                  width: 70,
-                  height: 70,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.red, width: 3),
-                  ),
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage('assets/$imgPath'),
-                  ),
-                ),
-                Text(
-                  author,
-                  style: TextStyle(fontSize: 10,letterSpacing:0.5),
-                ),
-              ],
-            ),
-  );
-}

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:insta/app_screens/dmPage.dart';
-import 'package:insta/app_screens/homeScreen.dart';
-import 'package:insta/app_screens/searchPage.dart';
 import 'package:insta/common/MyBottomNavBar.dart';
 import 'package:insta/route_generator.dart';
 // import 'app_screens/firstPage.dart';
@@ -17,8 +15,6 @@ class Root extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // home: HomePage(),
-      // home: SearchPage(),
       // home:MyBottomNavBar(),
       home:DmPage(userName: "Loki"),
       theme: ThemeData.dark(),
