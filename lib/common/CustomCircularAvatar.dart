@@ -6,7 +6,13 @@ class CustomCircularAvatar extends StatefulWidget {
   final String imgPath;
   final double radius;
   final EdgeInsetsGeometry? margin;
-  const CustomCircularAvatar({ Key? key, required this.storyRing, this.storySeen=false, required this.imgPath, this.radius=30, this.margin}) : super(key: key);
+  const CustomCircularAvatar({ Key? key, 
+    required this.storyRing, 
+    this.storySeen=false, 
+    required this.imgPath, 
+    this.radius=30, 
+    this.margin
+  }) : super(key: key);
 
   @override
   _CustomCircularAvatarState createState() => _CustomCircularAvatarState();

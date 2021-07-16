@@ -76,6 +76,37 @@ class _DmPageState extends State<DmPage> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.grey[900],
+        child: GestureDetector(
+          onTap: () {
+            print('Camera clicked');
+          },
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.camera_alt_rounded, 
+                  size: 25,
+                  color: Colors.blue[300],
+                ),
+                Container(
+                  margin: EdgeInsets.fromLTRB(5, 0 ,0, 0),
+                  child: Text(
+                    'Camera',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.blue[300],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
+      ),
     );
   }
 }
