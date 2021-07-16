@@ -13,11 +13,12 @@ class MyBottomNavBar extends StatefulWidget {
 
 class _MyBottomNavBarState extends State<MyBottomNavBar> {
   int ind = 0;
-  List<Widget> pageList = [HomePage(), SearchPage()];
-  List appBarList = [AppBarHomePage(), AppBarSearchPage()];
+  
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> pageList = [HomePage(), SearchPage()];
+    List appBarList = [AppBarHomePage(context), AppBarSearchPage(context)];
     return Scaffold(
       appBar: appBarList[ind],
       body: pageList[ind],

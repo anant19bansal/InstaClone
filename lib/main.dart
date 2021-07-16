@@ -16,9 +16,9 @@ class Root extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       // home:MyBottomNavBar(),
-      home:DmPage(userName: "Loki"),
+      // home:DmPage(),
       theme: ThemeData.dark(),
-      // initialRoute: '/',
+      initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }

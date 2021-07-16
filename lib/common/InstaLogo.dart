@@ -14,8 +14,7 @@ class _InstaLogoState extends State<InstaLogo> {
     return Container(
       child: Image(
         height: widget.logoHeight,
-        image: NetworkImage(
-            'https://www.pngkey.com/png/full/828-8286178_mackeys-work-needs-no-elaborate-presentation-or-distracting.png'),
+        image: AssetImage('assets/Insta_logo.png'),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insta/app_screens/dmPage.dart';
 import 'package:insta/app_screens/firstPage.dart';
 import 'package:insta/app_screens/logIn.dart';
 import 'package:insta/app_screens/signUp.dart';
@@ -15,6 +16,8 @@ class RouteGenerator{
         return MaterialPageRoute(builder: (context) => LogIn());
       case '/home':
         return MaterialPageRoute(builder: (context) => MyBottomNavBar());
+      case '/dms':
+        return MaterialPageRoute(builder: (context) => DmPage());
       default:
         return MaterialPageRoute(builder: (context) => LogIn());
     }

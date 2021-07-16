@@ -47,6 +47,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/Insta_logo.png
     - assets/IronMan.jpg
     - assets/Thor.jpg
     - assets/Danvers.jpg
@@ -60,6 +61,20 @@ flutter:
     - assets/wanda_post.jpg
     - assets/thor_post.jpg
     - assets/drStrange_post.jpg
+    - assets/1_post.jpg
+    - assets/2_post.jpg
+    - assets/3_post.jpeg
+    - assets/4_post.png
+    - assets/5_post.jpeg
+    - assets/6_post.jpg
+    - assets/7_post.jpg
+    - assets/8_post.jpg
+    - assets/9_post.jpg
+    - assets/10_post.jpg
+    - assets/11_post.jpg
+    - assets/12_post.jpg
+    - assets/13_post.jpg
+    - assets/14_post.jpg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
