@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insta/app_screens/dmPage.dart';
 import 'package:insta/app_screens/homeScreen.dart';
 import 'package:insta/app_screens/searchPage.dart';
 import 'package:insta/common/MyBottomNavBar.dart';
@@ -19,8 +20,9 @@ class Root extends StatelessWidget {
       // home: HomePage(),
       // home: SearchPage(),
       // home:MyBottomNavBar(),
+      home:DmPage(userName: "Loki"),
       theme: ThemeData.dark(),
-      initialRoute: '/',
+      // initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
