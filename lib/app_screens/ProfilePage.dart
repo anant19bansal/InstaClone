@@ -267,6 +267,7 @@ class _ProfileGridState extends State<ProfileGrid> {
     '1_post.jpg', '13_post.jpg', '3_post.jpeg', 
     '11_post.jpg', '5_post.jpeg', '9_post.jpg', '7_post.jpg',
     '6_post.jpg', '10_post.jpg', '2_post.jpg',
+    '8_post.jpg', '12_post.jpg', 'thor_post.jpg',
   ];
   @override
   Widget build(BuildContext context) {

@@ -19,13 +19,26 @@ class _MyBottomNavBarState extends State<MyBottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> pageList = [HomePage(), SearchPage()];
-    List appBarList = [AppBarHomePage(context), AppBarSearchPage(context), AppBarProfilePage(context)];
+    List<Widget> pageList = [
+      HomePage(), 
+      SearchPage(),  
+      Container(), 
+      Container(), 
+      ProfilePage()
+    ];
+    List appBarList = [
+      AppBarHomePage(context), 
+      AppBarSearchPage(context), 
+      AppBar(title: Text('To be made')), 
+      AppBar(title: Text('To be made')),
+      AppBarProfilePage(context)
+    ];
+    String img='Loki.jpg';
     return Scaffold(
-      // appBar: appBarList[ind],
-      appBar: AppBarProfilePage(context),
-      body: ProfilePage(),
-      // body: pageList[ind],
+      appBar: appBarList[ind],
+      // appBar: AppBarProfilePage(context),
+      // body: ProfilePage(),
+      body: pageList[ind],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.grey[900],
         showSelectedLabels: false,
@@ -47,11 +60,11 @@ class _MyBottomNavBarState extends State<MyBottomNavBar> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
-            label: 'Home',
+            label: 'Likes',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
-            label: 'Home',
+            label: 'Profile',
           )
         ],
         onTap: (index){
