@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:insta/app_bars/AppBarHomePage.dart';
+import 'package:insta/app_bars/AppBarProfilePage.dart';
 import 'package:insta/app_bars/AppBarSearchPage.dart';
+import 'package:insta/app_screens/ProfilePage.dart';
 import 'package:insta/app_screens/homeScreen.dart';
 import 'package:insta/app_screens/searchPage.dart';
 
@@ -18,11 +20,14 @@ class _MyBottomNavBarState extends State<MyBottomNavBar> {
   @override
   Widget build(BuildContext context) {
     List<Widget> pageList = [HomePage(), SearchPage()];
-    List appBarList = [AppBarHomePage(context), AppBarSearchPage(context)];
+    List appBarList = [AppBarHomePage(context), AppBarSearchPage(context), AppBarProfilePage(context)];
     return Scaffold(
-      appBar: appBarList[ind],
-      body: pageList[ind],
+      // appBar: appBarList[ind],
+      appBar: AppBarProfilePage(context),
+      body: ProfilePage(),
+      // body: pageList[ind],
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.grey[900],
         showSelectedLabels: false,
         showUnselectedLabels: false,
         type: BottomNavigationBarType.fixed,

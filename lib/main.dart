@@ -15,10 +15,10 @@ class Root extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // home:MyBottomNavBar(),
+      home:MyBottomNavBar(),
       // home:DmPage(),
       theme: ThemeData.dark(),
-      initialRoute: '/',
+      // initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }

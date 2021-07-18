@@ -6,12 +6,16 @@ class CustomCircularAvatar extends StatefulWidget {
   final String imgPath;
   final double radius;
   final EdgeInsetsGeometry? margin;
+  final double width;
+  final double paddingBetween;
   const CustomCircularAvatar({ Key? key, 
     required this.storyRing, 
     this.storySeen=false, 
     required this.imgPath, 
     this.radius=30, 
-    this.margin
+    this.margin,
+    this.width=70,
+    this.paddingBetween=3,
   }) : super(key: key);
 
   @override
@@ -31,9 +35,9 @@ class _CustomCircularAvatarState extends State<CustomCircularAvatar> {
     double borderWidth = (widget.storySeen)?1:2;
     return Container(
         margin: widget.margin,
-        padding: (widget.storySeen)?EdgeInsets.all(3):EdgeInsets.all(2),
-        width: 70,
-        height: 70,
+        padding: (widget.storySeen)?EdgeInsets.all(widget.paddingBetween):EdgeInsets.all(widget.paddingBetween-2),
+        width: widget.width,
+        height: widget.width,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(color: ringColor, width: borderWidth),
