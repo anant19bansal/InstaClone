@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:insta/common/MyBottomNavBar.dart';
+import 'package:firebase_core/firebase_core.dart';
+// import 'package:insta/common/MyBottomNavBar.dart';
 import 'package:insta/route_generator.dart';
 
-void main() => runApp(Root());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
-class Root extends StatelessWidget {
-  const Root({ Key? key }) : super(key: key);
-
+class MyApp extends StatelessWidget {
+  // final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
+  
+  const MyApp({ Key? key }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
