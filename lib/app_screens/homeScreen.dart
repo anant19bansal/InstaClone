@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:insta/common/CustomCircularAvatar.dart';
+import 'package:insta/common/InstaLogo.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -8,20 +9,64 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black,
-      child: SingleChildScrollView(
-        physics: ScrollPhysics(),
-        child: HomePosts(),
+    super.build(context);
+    return Scaffold(
+      appBar: AppBarHomePage(context),
+      body: Container(
+        color: Colors.black,
+        child: SingleChildScrollView(
+          physics: ScrollPhysics(),
+          child: HomePosts(),
+        ),
       ),
     );
   }
+
+  
 }
 
-
+class AppBarHomePage extends AppBar {
+    AppBarHomePage(context) : super(
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              onPressed: () {},
+              padding: EdgeInsets.zero,
+              constraints: BoxConstraints(),
+              icon: Icon(Icons.camera_alt_outlined),
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(30, 0, 0, 0),
+              child: InstaLogo(logoHeight: 30),
+            ),
+            Row(
+              // mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.tv_rounded),
+                ),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/dms');
+                    },
+                    child: Icon(Icons.call_made),
+                )
+              ],
+            ),
+          ],
+        ),
+        
+      );
+}
 
 
 class HomePosts extends StatefulWidget {
