@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:insta/common/CustomCircularAvatar.dart';
 
 class ProfilePage extends StatefulWidget{
-  const ProfilePage({ Key? key }) : super(key: key);
+  final DocumentSnapshot user;
+  const ProfilePage({ Key? key , required this.user}) : super(key: key);
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -24,7 +26,7 @@ class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClient
           slivers: [
             SliverToBoxAdapter(child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Header(),
+              child: Header(widget.user),
             )),
             SliverToBoxAdapter(child: Padding(
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -54,16 +56,8 @@ class AppBarProfilePage extends AppBar {
   );
 }
 
-class Header extends StatefulWidget {
-  const Header({ Key? key }) : super(key: key);
 
-  @override
-  _HeaderState createState() => _HeaderState();
-}
-
-class _HeaderState extends State<Header> {
-  @override
-  Widget build(BuildContext context) {
+Header(user){
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,7 +66,8 @@ class _HeaderState extends State<Header> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomCircularAvatar(
-                imgPath: 'Loki.jpg',
+                isNetworkImage: true,
+                imgPath: user['profile-pic'],
                 storyRing: true,
                 storySeen: true,
                 width: 90,
@@ -103,15 +98,72 @@ class _HeaderState extends State<Header> {
             ],
           ),
           SizedBox(height: 10,),
-          Text('Loki Laufeyson', style: TextStyle(fontSize: 14),),
+          Text(user['name'], style: TextStyle(fontSize: 14),),
           Text('I am Loki of Asguard', style: TextStyle(fontSize: 14),),
           Text('And I am burdened with glorious purposes', style: TextStyle(fontSize: 14),),
         ],
       ),
     );
-  }
 }
 
+
+// class Header extends StatefulWidget {
+//   const Header({ Key? key }) : super(key: key);
+
+//   @override
+//   _HeaderState createState() => _HeaderState();
+// }
+
+// class _HeaderState extends State<Header> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//               CustomCircularAvatar(
+//                 imgPath: 'Loki.jpg',
+//                 storyRing: true,
+//                 storySeen: true,
+//                 width: 90,
+//                 paddingBetween: 4,
+//               ),
+
+//               Column(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children: [
+//                   Text('54', style: TextStyle(fontSize: 21),),
+//                   Text('Posts', style: TextStyle(fontSize: 15),),
+//                 ],
+//               ),
+//               Column(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children: [
+//                   Text('834', style: TextStyle(fontSize: 21),),
+//                   Text('Followers', style: TextStyle(fontSize: 15),),
+//                 ],
+//               ),
+//               Column(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children: [
+//                   Text('162', style: TextStyle(fontSize: 21),),
+//                   Text('Following', style: TextStyle(fontSize: 15),),
+//                 ],
+//               ),
+//             ],
+//           ),
+//           SizedBox(height: 10,),
+//           Text('Loki Laufeyson', style: TextStyle(fontSize: 14),),
+//           Text('I am Loki of Asguard', style: TextStyle(fontSize: 14),),
+//           Text('And I am burdened with glorious purposes', style: TextStyle(fontSize: 14),),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class EditButton extends StatelessWidget {
   const EditButton({ Key? key }) : super(key: key);

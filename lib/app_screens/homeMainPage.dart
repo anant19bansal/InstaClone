@@ -1,27 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:insta/app_screens/ProfilePage.dart';
 import 'package:insta/app_screens/homeScreen.dart';
 import 'package:insta/app_screens/searchPage.dart';
 
 class HomeMainPage extends StatefulWidget {
-  const HomeMainPage({ Key? key }) : super(key: key);
+  final DocumentSnapshot user;
+  const HomeMainPage({required this.user});
 
   @override
-  _HomeMainPageState createState() => _HomeMainPageState();
+  _HomeMainPageState createState() => _HomeMainPageState(user);
 }
 
 class _HomeMainPageState extends State<HomeMainPage> {
+  DocumentSnapshot user;
+  _HomeMainPageState(this.user);
   
   PageController _pageController = PageController();
   int _currentIndex = 0;
 
-  List<Widget> _screens = [
-    HomePage(), 
-    SearchPage(),  
-    Scaffold(appBar: AppBar(title: Text('To be Made'),),), 
-    Scaffold(appBar: AppBar(title: Text('To be Made'),),), 
-    ProfilePage(),
-  ];
+  
 
   _onPageChanged(int index){
     setState(() {
@@ -35,6 +33,15 @@ class _HomeMainPageState extends State<HomeMainPage> {
   
   @override
   Widget build(BuildContext context) {
+
+    List<Widget> _screens = [
+      HomePage(), 
+      SearchPage(),  
+      Scaffold(appBar: AppBar(title: Text('To be Made'),),), 
+      Scaffold(appBar: AppBar(title: Text('To be Made'),),), 
+      ProfilePage(user: this.user),
+    ];
+
     return Scaffold(
       body: PageView(
         controller: _pageController,

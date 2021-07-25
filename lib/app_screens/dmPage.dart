@@ -12,15 +12,15 @@ class DmPage extends StatefulWidget {
 class _DmPageState extends State<DmPage> {
   String userName = 'Loki';
   List<Widget> dmList = [
-    DmList(imgPath:'Danvers.jpg', storySeen: true, name: 'Danvers', lastMessage: 'see you soon..', time: 'now', storyRing: true,),
-    DmList(imgPath:'Thor.jpg', storySeen: false, name: 'Thor', lastMessage: 'see you soon..', time: 'now', storyRing: true,),
-    DmList(imgPath:'Mobius.jpg', storySeen: false, name: 'Mobius', lastMessage: 'see you soon..', time: '1m', storyRing: true,),
-    DmList(imgPath:'DrStrange.jpg', storySeen: true, name: 'Dr. Strange', lastMessage: 'see you soon..', time: '2m', storyRing: false,),
-    DmList(imgPath:'Sylvie.jpg', storySeen: true, name: 'Sylvie', lastMessage: 'see you soon..', time: '5m', storyRing: true,),
-    DmList(imgPath:'wanda.jpg', storySeen: false, name: 'Wanda', lastMessage: 'see you soon..', time: '10m', storyRing: true,),
-    DmList(imgPath:'Steve.jpg', storySeen: false, name: 'Steve', lastMessage: 'see you soon..', time: '15m', storyRing: true,),
-    DmList(imgPath:'IronMan.jpg', storySeen: false, name: 'IronMan', lastMessage: 'see you soon..', time: '1h', storyRing: true,),
-    DmList(imgPath:'Loki.jpg', storySeen: false, name: 'President Loki', lastMessage: 'see you soon..', time: '3h', storyRing: true,),
+    DmList(isNetworkImage: false, imgPath:'Danvers.jpg', storySeen: true, name: 'Danvers', lastMessage: 'see you soon..', time: 'now', storyRing: true,),
+    DmList(isNetworkImage: false, imgPath:'Thor.jpg', storySeen: false, name: 'Thor', lastMessage: 'see you soon..', time: 'now', storyRing: true,),
+    DmList(isNetworkImage: false, imgPath:'Mobius.jpg', storySeen: false, name: 'Mobius', lastMessage: 'see you soon..', time: '1m', storyRing: true,),
+    DmList(isNetworkImage: false, imgPath:'DrStrange.jpg', storySeen: true, name: 'Dr. Strange', lastMessage: 'see you soon..', time: '2m', storyRing: false,),
+    DmList(isNetworkImage: false, imgPath:'Sylvie.jpg', storySeen: true, name: 'Sylvie', lastMessage: 'see you soon..', time: '5m', storyRing: true,),
+    DmList(isNetworkImage: false, imgPath:'wanda.jpg', storySeen: false, name: 'Wanda', lastMessage: 'see you soon..', time: '10m', storyRing: true,),
+    DmList(isNetworkImage: false, imgPath:'Steve.jpg', storySeen: false, name: 'Steve', lastMessage: 'see you soon..', time: '15m', storyRing: true,),
+    DmList(isNetworkImage: false, imgPath:'IronMan.jpg', storySeen: false, name: 'IronMan', lastMessage: 'see you soon..', time: '1h', storyRing: true,),
+    DmList(isNetworkImage: false, imgPath:'Loki.jpg', storySeen: false, name: 'President Loki', lastMessage: 'see you soon..', time: '3h', storyRing: true,),
   ];
   @override
   Widget build(BuildContext context) {
@@ -115,6 +115,7 @@ class _DmPageState extends State<DmPage> {
 
 
 class DmList extends StatefulWidget {
+  final bool isNetworkImage;
   final bool storyRing;
   final bool storySeen;
   final String imgPath;
@@ -122,6 +123,7 @@ class DmList extends StatefulWidget {
   final String lastMessage;
   final String time;
   const DmList({ Key? key,
+    required this.isNetworkImage,
     required this.imgPath,
     required this.storyRing,
     this.storySeen=false,
@@ -144,6 +146,7 @@ class _DmListState extends State<DmList> {
       child: Row(
         children: [
           CustomCircularAvatar(
+            isNetworkImage: widget.isNetworkImage,
             imgPath: widget.imgPath,
             storyRing: widget.storyRing, 
             storySeen: widget.storySeen, 

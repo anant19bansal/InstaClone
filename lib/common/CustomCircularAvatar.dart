@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomCircularAvatar extends StatefulWidget {
+  final bool isNetworkImage;
   final bool storyRing;
   final bool storySeen;
   final String imgPath;
@@ -8,7 +9,8 @@ class CustomCircularAvatar extends StatefulWidget {
   final EdgeInsetsGeometry? margin;
   final double width;
   final double paddingBetween;
-  const CustomCircularAvatar({ Key? key, 
+  const CustomCircularAvatar({ Key? key,
+    required this.isNetworkImage, 
     required this.storyRing, 
     this.storySeen=false, 
     required this.imgPath, 
@@ -33,7 +35,7 @@ class _CustomCircularAvatarState extends State<CustomCircularAvatar> {
   Widget withRing(){
     Color ringColor = (widget.storySeen)?Colors.grey:Colors.red;
     double borderWidth = (widget.storySeen)?1:2;
-    return Container(
+    return (widget.isNetworkImage)? Container(
         margin: widget.margin,
         padding: (widget.storySeen)?EdgeInsets.all(widget.paddingBetween):EdgeInsets.all(widget.paddingBetween-2),
         width: widget.width,
@@ -43,10 +45,33 @@ class _CustomCircularAvatarState extends State<CustomCircularAvatar> {
           border: Border.all(color: ringColor, width: borderWidth),
         ),
         child: CircleAvatar(
-          backgroundImage: AssetImage('assets/${widget.imgPath}'),
+          backgroundImage:NetworkImage(widget.imgPath),
+        ),
+      )
+      :
+      Container(
+        margin: widget.margin,
+        padding: (widget.storySeen)?EdgeInsets.all(widget.paddingBetween):EdgeInsets.all(widget.paddingBetween-2),
+        width: widget.width,
+        height: widget.width,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: ringColor, width: borderWidth),
+        ),
+        child: CircleAvatar(
+          backgroundImage:AssetImage('assets/${widget.imgPath}'),
         ),
       );
   }
+
+
+
+
+
+
+
+
+
   Widget withoutRing(){
     return Container(
       margin: widget.margin,

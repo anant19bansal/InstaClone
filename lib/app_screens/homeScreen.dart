@@ -118,15 +118,15 @@ class _HomePostsState extends State<HomePosts> {
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              getStories(imgPath: 'Loki.jpg', author:'Your Story', storyRing: true, storySeen: false),
-              getStories(imgPath: 'Sylvie.jpg', author:'Sylvie', storyRing: true, storySeen: false),
-              getStories(imgPath: 'Mobius.jpg', author:'Mobius', storyRing: true, storySeen: false),
-              getStories(imgPath: 'wanda.jpg', author:'Wanda', storyRing: true, storySeen: false),
-              getStories(imgPath: 'DrStrange.jpg', author:'Dr. Strange', storyRing: true, storySeen: false),
-              getStories(imgPath: 'Thor.jpg', author:'Thor', storyRing: true, storySeen: true),
-              getStories(imgPath: 'Danvers.jpg', author:'Danvers', storyRing: true, storySeen: true),
-              getStories(imgPath: 'Steve.jpg', author:'Steve', storyRing: true, storySeen: true),
-              getStories(imgPath: 'IronMan.jpg', author:'Iron Man', storyRing: true, storySeen: true),
+              getStories(isNetworkImage: false, imgPath: 'Loki.jpg', author:'Your Story', storyRing: true, storySeen: false),
+              getStories(isNetworkImage: false, imgPath: 'Sylvie.jpg', author:'Sylvie', storyRing: true, storySeen: false),
+              getStories(isNetworkImage: false, imgPath: 'Mobius.jpg', author:'Mobius', storyRing: true, storySeen: false),
+              getStories(isNetworkImage: false, imgPath: 'wanda.jpg', author:'Wanda', storyRing: true, storySeen: false),
+              getStories(isNetworkImage: false, imgPath: 'DrStrange.jpg', author:'Dr. Strange', storyRing: true, storySeen: false),
+              getStories(isNetworkImage: false, imgPath: 'Thor.jpg', author:'Thor', storyRing: true, storySeen: true),
+              getStories(isNetworkImage: false, imgPath: 'Danvers.jpg', author:'Danvers', storyRing: true, storySeen: true),
+              getStories(isNetworkImage: false, imgPath: 'Steve.jpg', author:'Steve', storyRing: true, storySeen: true),
+              getStories(isNetworkImage: false, imgPath: 'IronMan.jpg', author:'Iron Man', storyRing: true, storySeen: true),
             ],
           ),
         ),
@@ -145,12 +145,12 @@ class _HomePostsState extends State<HomePosts> {
   }
 }
 
-Widget getStories({required String imgPath, required String author, required bool storyRing, bool storySeen = false, double radius=35}){
+Widget getStories({required bool isNetworkImage, required String imgPath, required String author, required bool storyRing, bool storySeen = false, double radius=35}){
   EdgeInsetsGeometry? margin=EdgeInsets.fromLTRB(10, 0, 10, 5);
   return Container(
     child: Column(
               children: [
-                CustomCircularAvatar(storyRing: storyRing, storySeen:storySeen, imgPath: imgPath, radius:radius, margin:margin),
+                CustomCircularAvatar(isNetworkImage: isNetworkImage, storyRing: storyRing, storySeen:storySeen, imgPath: imgPath, radius:radius, margin:margin),
                 Text(
                   author,
                   style: TextStyle(fontSize: 10,letterSpacing:0.5),
@@ -185,6 +185,7 @@ class _PostState extends State<Post> {
           ListTile(
             visualDensity: VisualDensity(horizontal: -3,vertical: -3),
             leading: CustomCircularAvatar(
+              isNetworkImage: false,
               imgPath:'${widget.authorAvatar}', 
               storyRing: false,
               radius: 22,
