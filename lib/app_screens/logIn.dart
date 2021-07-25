@@ -45,17 +45,17 @@ class _LogInState extends State<LogIn> {
       final User? user = await _auth.currentUser;
 
       if(user!=null){
-        final userInDB = (await _usersCollection.where('id', isEqualTo: user.uid).get()).docs;
-        if(userInDB.length==0){
-          await _usersCollection.doc(user.uid).set({
-            'id': user.uid,
-            // 'username': user.displayName,
-            'name': user.displayName,
-            'profile-pic': user.photoURL,
-            'email': user.email,
-            'phone-number': user.phoneNumber,
-          });
-        }
+        // final userInDB = (await _usersCollection.where('id', isEqualTo: user.uid).get()).docs;
+        // if(userInDB.length==0){
+        //   await _usersCollection.doc(user.uid).set({
+        //     'id': user.uid,
+        //     // 'username': user.displayName,
+        //     'name': user.displayName,
+        //     'profile-pic': user.photoURL,
+        //     'email': user.email,
+        //     'phone-number': user.phoneNumber,
+        //   });
+        // }
 
         await _preferences.setString('id', user.uid);
         await _preferences.setString('name', user.displayName ?? '');

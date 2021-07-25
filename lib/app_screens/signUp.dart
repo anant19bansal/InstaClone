@@ -1,149 +1,7 @@
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
-// import '../common/InstaLogo.dart';
-// import '../common/MyCustomTextField.dart';
-
-// class SignUp extends StatefulWidget {
-
-//   @override
-//   _SignUpState createState() => _SignUpState();
-// }
-
-// class _SignUpState extends State<SignUp> {
-//   late String _userName, _email, _password, _confirmPassword;
-//   final auth = FirebaseAuth.instance;
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.black,
-//       body: SingleChildScrollView(
-//         child: Center(
-//           child: Padding(
-//             padding: const EdgeInsets.fromLTRB(0, 60, 0, 0),
-//             child: Column(
-//               children: [
-//                 Padding(
-//                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 50),
-//                   child: InstaLogo(logoHeight: 50,),
-//                 ),
-//                 MyCustomTextField(
-//                   placeholder: 'Username',
-//                   onChanged: (value){
-//                     setState(() {
-//                       _userName = value;
-//                     });
-//                   }
-//                 ),
-//                 MyCustomTextField(
-//                   placeholder: 'Email',
-//                   keyboardType: TextInputType.emailAddress,
-//                   onChanged: (value){
-//                     setState(() {
-//                       _email = value;
-//                     });
-//                   }
-//                 ),
-//                 MyCustomTextField(
-//                   placeholder: 'Password',
-//                   obscureText: true,
-//                   onChanged: (value){
-//                     setState(() {
-//                       _password = value;
-//                     });
-//                   }
-//                 ),
-//                 MyCustomTextField(
-//                   placeholder: 'Confirm Password',
-//                   obscureText: true,
-//                   onChanged: (value){
-//                     setState(() {
-//                       _confirmPassword = value;
-//                     });
-//                   }
-//                 ),
-//                 Padding(
-//                   padding: const EdgeInsets.fromLTRB(0, 6, 0, 100),
-//                   child: ElevatedButton(
-//                     onPressed: () {
-//                       // Navigator.pushNamed(context, '/home');
-//                       print(_userName);
-//                       print(_email);
-//                       print(_password);
-//                       print(_confirmPassword);
-//                     },
-//                     style: ElevatedButton.styleFrom(primary: Colors.blue[400]),
-//                     child: Padding(
-//                       padding:
-//                           EdgeInsets.symmetric(horizontal: 135, vertical: 18),
-//                       child: Text('Sign up'),
-//                     ),
-//                   ),
-//                 ),
-//                 Row(
-//                   children: [
-//                     Expanded(
-//                       child: Container(
-//                         margin: EdgeInsets.symmetric(horizontal: 21),
-//                         child: Divider(
-//                           color: Colors.grey[700],
-//                         ),
-//                         // height:30,
-//                       ),
-//                     ),
-//                     Text('OR', style: TextStyle(color: Colors.grey[500]),),
-//                     Expanded(
-//                       child: Container(
-//                         margin: EdgeInsets.symmetric(horizontal: 21),
-//                         child: Divider(
-//                           color: Colors.grey[700],
-//                         ),
-//                         // height:30,
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//                 Row(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   children: [
-//                     Container(
-//                       margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
-//                       child: Text('Have an Account?', style: TextStyle(color: Colors.grey[500]),),
-//                     ),
-//                     Container(
-//                       child: TextButton(
-//                         onPressed: () {
-//                           Navigator.pushNamed(context, '/log-in');
-//                         },
-//                         child: Text('Log In.'),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//                 Padding(
-//                   padding: const EdgeInsets.fromLTRB(0, 70, 0, 0),
-//                   child: Divider(
-//                     color: Colors.grey[700],
-//                   ),
-//                 ),
-//                 Center(
-//                   child: Text('Instagram from Facebook',
-//                     style: TextStyle(
-//                       color: Colors.grey[500],
-//                       fontSize: 12,
-//                     ),
-//                   ),
-//                 )
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../common/InstaLogo.dart';
 import '../common/MyCustomTextField.dart';
 
@@ -153,9 +11,62 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  late String _userName, _email, _password, _confirmPassword;
-  final auth = FirebaseAuth.instance;
+  TextEditingController _name = TextEditingController();
+  TextEditingController _email = TextEditingController();
+  TextEditingController _password = TextEditingController();
+  TextEditingController _confirmPassword = TextEditingController();
+  late SharedPreferences _preferences;
+  late CollectionReference _usersCollection; 
+  late FirebaseAuth _auth;
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() { 
+    super.initState();
+    initialize();
+  }
+
+  initialize() async{
+    try {
+      _auth = await FirebaseAuth.instance;
+      _preferences = await SharedPreferences.getInstance();
+      _usersCollection = await FirebaseFirestore.instance.collection('users');  
+    } catch (err) {
+      print('Error in inititalize function in sign up page*********: $err');
+    }
+    
+  }
+
+  handleUserSignUp() async{
+    try {
+      await _auth.createUserWithEmailAndPassword(email: _email.text, password: _password.text);
+      final User? user = await _auth.currentUser;
+      if(user!=null){
+        final userInDB = (await _usersCollection.where('id', isEqualTo: user.uid).get()).docs;
+        if(userInDB.length==0){
+          await _usersCollection.doc(user.uid).set({
+            'id': user.uid,
+            // 'username': user.displayName,
+            'name': _name.text,
+            'profile-pic': user.photoURL,
+            'email': user.email,
+            'phone-number': user.phoneNumber,
+          });
+        }
+
+        await _preferences.setString('id', user.uid);
+        await _preferences.setString('name', user.displayName ?? '');
+        await _preferences.setString('profile-pic', user.photoURL ?? '');
+        
+        DocumentSnapshot userDoc = await _usersCollection.doc(user.uid).get();
+        Navigator.of(context).pushReplacementNamed('/home', arguments:userDoc);
+      }
+
+    } catch (err) {
+      print('Error in handleUserSignUp function in sign up page*********: $err');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -177,18 +88,16 @@ class _SignUpState extends State<SignUp> {
                   child: Column(
                     children: [
                       MyCustomTextFormField(
-                          placeholder: 'Username',
+                        controller: _name,
+                          placeholder: 'Name',
                           validator: (value) {
                             if (value.isEmpty) {
-                              return "Username cannot be kept empty";
+                              return "Name cannot be kept empty";
                             }
                           },
-                          onChanged: (value) {
-                            setState(() {
-                              _userName = value;
-                            });
-                          }),
+                      ),
                       MyCustomTextFormField(
+                        controller: _email,
                           placeholder: 'Email',
                           // ignore: todo
                           //TODO add a email and password validator
@@ -198,12 +107,9 @@ class _SignUpState extends State<SignUp> {
                             }
                           },
                           keyboardType: TextInputType.emailAddress,
-                          onChanged: (value) {
-                            setState(() {
-                              _email = value;
-                            });
-                          }),
+                      ),
                       MyCustomTextFormField(
+                        controller: _password,
                           placeholder: 'Password',
                           validator: (value) {
                             if (value.isEmpty) {
@@ -211,41 +117,26 @@ class _SignUpState extends State<SignUp> {
                             }
                           },
                           obscureText: true,
-                          onChanged: (value) {
-                            setState(() {
-                              _password = value;
-                            });
-                          }),
+                      ),
                       MyCustomTextFormField(
+                        controller: _confirmPassword,
                           placeholder: 'Confirm Password',
                           validator: (value) {
-                            if (value!=_password) {
+                            if (value!=_password.text) {
                               return "Password didn't match";
                             }
                           },
                           obscureText: true,
-                          onChanged: (value) {
-                            setState(() {
-                              _confirmPassword = value;
-                            });
-                          }),
+                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 6, 0, 100),
                         child: ElevatedButton(
                           onPressed: () {
-                            
-                            // print(_userName);
-                            // print(_email);
-                            // print(_password);
-                            // print(_confirmPassword);
-                            // print(_formKey.currentState);
                             if(_formKey.currentState!.validate()){
-                              var value = auth.createUserWithEmailAndPassword(email: _email, password: _password);
-                              print('value is: $value');
+                              handleUserSignUp();
                             }else{
                               print("Wrong format for credentials");
                             }
-                            // Navigator.pushNamed(context, '/home');
                           },
                           style: ElevatedButton.styleFrom(
                               primary: Colors.blue[400]),

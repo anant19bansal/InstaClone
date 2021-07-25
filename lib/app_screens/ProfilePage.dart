@@ -79,8 +79,8 @@ Header(user){
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomCircularAvatar(
-                isNetworkImage: true,
-                imgPath: user['profile-pic'],
+                isNetworkImage: (user['profile-pic']==null)? false : true,
+                imgPath: user['profile-pic'] ?? 'Loki.jpg',
                 storyRing: true,
                 storySeen: true,
                 width: 90,
