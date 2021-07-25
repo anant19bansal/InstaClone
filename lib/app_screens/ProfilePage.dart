@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:insta/common/CustomCircularAvatar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget{
   final DocumentSnapshot user;
@@ -52,7 +54,18 @@ class AppBarProfilePage extends AppBar {
         Text('Loki'),
         Icon(Icons.keyboard_arrow_down)
       ],
-    )
+    ),
+    actions: [
+      TextButton(
+        onPressed: () async{
+          await FirebaseAuth.instance.signOut();
+          final preferences = await SharedPreferences.getInstance();
+          preferences.clear();
+          Navigator.of(context).pushReplacementNamed('/');
+        }, 
+        child: Text('Logout', style: TextStyle(color: Colors.white),),
+      ),
+    ]
   );
 }
 
