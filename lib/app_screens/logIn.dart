@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:insta/common/InstaLogo.dart';
 import 'package:insta/common/MyCustomTextField.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({Key? key}) : super(key: key);
@@ -11,9 +13,65 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
-  late String _email, _password;
-  final auth = FirebaseAuth.instance;
-  final _formKey = GlobalKey<FormState>();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late SharedPreferences _preferences;
+  late CollectionReference _usersCollection; 
+  late FirebaseAuth _auth;
+
+  @override
+  void initState() { 
+    super.initState();
+    initialize();
+  }
+
+  initialize() async{
+    try {
+      _auth = await FirebaseAuth.instance;
+      _preferences = await SharedPreferences.getInstance();
+      _usersCollection = await FirebaseFirestore.instance.collection('users');  
+    } catch (err) {
+      print('Error in inititalize function in login page*********: $err');
+    }
+    
+  }
+
+  handleEmailPasswordLogin() async{
+    try {
+      print(_emailController.text);
+      print(_passwordController.text);
+      await _auth.signInWithEmailAndPassword(email: _emailController.text, password: _passwordController.text);
+      final User? user = await _auth.currentUser;
+
+      if(user!=null){
+        final userInDB = (await _usersCollection.where('id', isEqualTo: user.uid).get()).docs;
+        if(userInDB.length==0){
+          await _usersCollection.doc(user.uid).set({
+            'id': user.uid,
+            // 'username': user.displayName,
+            'name': user.displayName,
+            'profile-pic': user.photoURL,
+            'email': user.email,
+            'phone-number': user.phoneNumber,
+          });
+        }
+
+        await _preferences.setString('id', user.uid);
+        await _preferences.setString('name', user.displayName ?? '');
+        await _preferences.setString('profile-pic', user.photoURL ?? '');
+        
+        DocumentSnapshot userDoc = await _usersCollection.doc(user.uid).get();
+        Navigator.of(context).pushReplacementNamed('/home', arguments:userDoc);
+      }
+
+    } catch (e) {
+      print('Error in handleEmailPasswordLogin funtion **************: $e');
+    }
+    
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,31 +90,25 @@ class _LogInState extends State<LogIn> {
                 child: Column(
                   children: [
                     MyCustomTextFormField(
-                        placeholder: 'email',
+                        controller: _emailController,
+                        placeholder: 'Email',
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value.isEmpty) {
-                            return "Username cannot be kept empty";
+                            return "Email cannot be kept empty";
                           }
                         },
-                        onChanged: (value) {
-                          setState(() {
-                            _email = value;
-                          });
-                        }),
+                    ),
                     MyCustomTextFormField(
-                        placeholder: 'password',
+                        controller: _passwordController,
+                        placeholder: 'Password',
                         validator: (value) {
                           if (value.isEmpty) {
                             return "Password cannot be kept empty";
                           }
                         },
                         obscureText: true,
-                        onChanged: (value) {
-                          setState(() {
-                            _password = value;
-                          });
-                        }),
+                    ),
                   ],
                 ),
               ),
@@ -74,12 +126,7 @@ class _LogInState extends State<LogIn> {
                 padding: const EdgeInsets.fromLTRB(0, 6, 0, 100),
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigator.pushNamed(context, '/home');
-                    // print(_email);
-                    // print(_password);
-                    _formKey.currentState!.validate()? 
-                      auth.signInWithEmailAndPassword(email: _email, password: _password):
-                      print("Wrong format");
+                    _formKey.currentState!.validate()? handleEmailPasswordLogin(): print('wrong format'); 
                   },
                   style: ElevatedButton.styleFrom(primary: Colors.blue[400]),
                   child: Padding(
