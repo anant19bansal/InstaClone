@@ -1,11 +1,13 @@
-import 'dart:ui';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:insta/common/CustomCircularAvatar.dart';
 import 'package:insta/screenArguments.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class EditProfile extends StatefulWidget {
   final DocumentSnapshot user;
@@ -29,6 +31,8 @@ _EditProfileState(this.user);
   late SharedPreferences _preferences;
   late CollectionReference _usersCollection; 
   late FirebaseAuth _auth;
+  late FirebaseStorage _storage;
+  late String _imgPath;
 
   @override
   void initState() { 
@@ -38,13 +42,14 @@ _EditProfileState(this.user);
 
   initialize() async{
     try {
+      _imgPath = user['profile-pic'];
       _auth = await FirebaseAuth.instance;
       _preferences = await SharedPreferences.getInstance();
       _usersCollection = await FirebaseFirestore.instance.collection('users');  
+      _storage = await FirebaseStorage.instance;
     } catch (err) {
       print('Error in inititalize function in edit profile page*********: $err');
     }
-    
   }
 
   handleUpdate() async{
@@ -54,10 +59,10 @@ _EditProfileState(this.user);
         await _usersCollection.doc(userId).update({
           'email': (_email.text.isNotEmpty)?_email.text:user['email'],
           'name': (_name.text.isNotEmpty)?_name.text:user['name'],
-          'username': (_username.text.isNotEmpty)?_username.text:user['email'],
+          'username': (_username.text.isNotEmpty)?_username.text:(user['username'].isNotEmpty)?user['username']:user['name'],
           'phone-number': (_phone.text.isNotEmpty)?_phone.text:user['phone-number'],
-          'bio': (_bio.text.isNotEmpty)?_bio.text:'',
-          'gender': (_gender.text.isNotEmpty)?_gender.text:'',
+          'bio': (_bio.text.isNotEmpty)?_bio.text:(user['bio'] ?? ''),
+          'gender': (_gender.text.isNotEmpty)?_gender:(user['gender'] ?? ''),
         });
         final userAuth =  await _auth.currentUser;
         if(userAuth!=null){
@@ -74,8 +79,70 @@ _EditProfileState(this.user);
     }
   }
 
-  updateProfilePhoto(){
+  updateUserDatabaseWithImage(String downloadUrl) async{
+    await _usersCollection.doc(user['id']).update({
+      'profile-pic': downloadUrl,
+    });
+    setState(() {
+      _imgPath = downloadUrl;
+    });
+  }
 
+  selectImageSource(ImageSource source) async {
+    try {
+      //open image picker
+      final picker = ImagePicker();
+      XFile? _profileImage = await picker.pickImage(source: source);
+      if(_profileImage!=null){
+        final imagePath = File(_profileImage.path); 
+        print (imagePath);
+        final String destination = "/users/avatar/avatar${DateTime.now().millisecondsSinceEpoch}";
+        final ref = await _storage.ref().child(destination);
+        final uploadTask = await ref.putFile(imagePath);  
+        print('fine till here*************');
+        final downloadUrl = await _storage.ref(destination).getDownloadURL();
+        print(downloadUrl);
+        updateUserDatabaseWithImage(downloadUrl);
+      }
+       
+    } catch (e) {
+      print('Error in selectImageSource function inside edit profile******: $e');
+    }
+  }
+
+  updateProfilePhoto(){
+    //show the modal bottom sheet to select image source from camera/gallery
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context, 
+      builder: (context) => FractionallySizedBox(
+        heightFactor: 0.18,
+        child:ListView(
+          children: [
+            ListTile(
+              leading: Icon(Icons.camera_alt),
+              title: Text('Camera'),
+              onTap: () {
+                Navigator.pop(context);
+                selectImageSource(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.photo),
+              title: Text('Gallery'),
+              onTap: () {
+                Navigator.pop(context);
+                selectImageSource(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
+    ); 
+    
+    //store the selected image path in variable
+    //set state to indicate that image is changed
+    //display the image on the circular avatar 
   }
 
   resetPassword(){
@@ -122,7 +189,7 @@ _EditProfileState(this.user);
                     child: CustomCircularAvatar(
                       radius: 50,
                       storyRing: false, 
-                      imgPath: user['profile-pic'],
+                      imgPath: _imgPath,
                     ),
                   ),
                   Container(

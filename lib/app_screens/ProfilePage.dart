@@ -22,7 +22,29 @@ class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClient
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: AppBarProfilePage(context),
+      appBar: AppBar(
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.lock),
+            Text((widget.user['username'].isEmpty)?widget.user['name']:widget.user['username']),
+            Icon(Icons.keyboard_arrow_down)
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async{
+              await FirebaseAuth.instance.signOut();
+              final preferences = await SharedPreferences.getInstance();
+              preferences.clear();
+              Navigator.of(context).pushReplacementNamed('/');
+            }, 
+            child: Text('Logout', style: TextStyle(color: Colors.white),),
+          ),
+        ]
+      ),
       body: Container(
         color: Colors.grey[900],
         child: CustomScrollView(
@@ -43,32 +65,32 @@ class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClient
   }
 }
 
-class AppBarProfilePage extends AppBar {
-  AppBarProfilePage(BuildContext context):super(
-    // backgroundColor: Colors.grey[900],
-    elevation: 0,
-    automaticallyImplyLeading: false,
-    title: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(Icons.lock),
-        Text('Loki'),
-        Icon(Icons.keyboard_arrow_down)
-      ],
-    ),
-    actions: [
-      TextButton(
-        onPressed: () async{
-          await FirebaseAuth.instance.signOut();
-          final preferences = await SharedPreferences.getInstance();
-          preferences.clear();
-          Navigator.of(context).pushReplacementNamed('/');
-        }, 
-        child: Text('Logout', style: TextStyle(color: Colors.white),),
-      ),
-    ]
-  );
-}
+// class AppBarProfilePage extends AppBar {
+//   AppBarProfilePage(BuildContext context):super(
+//     // backgroundColor: Colors.grey[900],
+//     elevation: 0,
+//     automaticallyImplyLeading: false,
+//     title: Row(
+//       mainAxisAlignment: MainAxisAlignment.center,
+//       children: [
+//         Icon(Icons.lock),
+//         Text('Loki'),
+//         Icon(Icons.keyboard_arrow_down)
+//       ],
+//     ),
+//     actions: [
+//       TextButton(
+//         onPressed: () async{
+//           await FirebaseAuth.instance.signOut();
+//           final preferences = await SharedPreferences.getInstance();
+//           preferences.clear();
+//           Navigator.of(context).pushReplacementNamed('/');
+//         }, 
+//         child: Text('Logout', style: TextStyle(color: Colors.white),),
+//       ),
+//     ]
+//   );
+// }
 
 
 Header(user){
@@ -111,9 +133,9 @@ Header(user){
             ],
           ),
           SizedBox(height: 10,),
-          Text(user['name'], style: TextStyle(fontSize: 14),),
-          Text('I am Loki of Asguard', style: TextStyle(fontSize: 14),),
-          Text('And I am burdened with glorious purposes', style: TextStyle(fontSize: 14),),
+          Text(user['name'], style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),),
+          Text(user['bio'], style: TextStyle(fontSize: 14),),
+          // Text('And I am burdened with glorious purposes', style: TextStyle(fontSize: 14),),
         ],
       ),
     );
