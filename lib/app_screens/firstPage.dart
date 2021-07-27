@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:insta/screenArguments.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/InstaLogo.dart';
 
@@ -31,7 +32,7 @@ class _FirstPageState extends State<FirstPage> {
       
       if(isUserSignedIn){
         final DocumentSnapshot user = await usersCollection.doc(userId).get();
-        Navigator.of(context).pushReplacementNamed('/home', arguments: user);
+        Navigator.of(context).pushReplacementNamed('/home', arguments: ScreenArguments(userDoc: user));
       }else{
         setState(() {
           pageInitialized = true;
@@ -76,7 +77,7 @@ class _FirstPageState extends State<FirstPage> {
         await _preferences.setString('profile-pic', user.photoURL ?? '');
         
         DocumentSnapshot userDoc = await usersCollection.doc(user.uid).get();
-        Navigator.of(context).pushReplacementNamed('/home', arguments:userDoc);
+        Navigator.of(context).pushReplacementNamed('/home', arguments:ScreenArguments(userDoc: userDoc));
       
       }
 

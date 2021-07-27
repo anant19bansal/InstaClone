@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:insta/app_screens/firstPage.dart';
 import 'package:insta/route_generator.dart';
 
 Future<void> main() async {
@@ -15,7 +16,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      initialRoute: '/',
+      // initialRoute: '/',
+      home: FirstPage(),
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }

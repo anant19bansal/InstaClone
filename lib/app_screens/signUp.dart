@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:insta/screenArguments.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/InstaLogo.dart';
 import '../common/MyCustomTextField.dart';
@@ -59,7 +60,7 @@ class _SignUpState extends State<SignUp> {
         await _preferences.setString('profile-pic', user.photoURL ?? '');
         
         DocumentSnapshot userDoc = await _usersCollection.doc(user.uid).get();
-        Navigator.of(context).pushReplacementNamed('/home', arguments:userDoc);
+        Navigator.of(context).pushReplacementNamed('/home', arguments:ScreenArguments(userDoc: userDoc));
       }
 
     } catch (err) {

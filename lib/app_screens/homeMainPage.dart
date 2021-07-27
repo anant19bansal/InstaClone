@@ -6,18 +6,27 @@ import 'package:insta/app_screens/searchPage.dart';
 
 class HomeMainPage extends StatefulWidget {
   final DocumentSnapshot user;
-  const HomeMainPage({required this.user});
+  final int passedIndex;
+  const HomeMainPage({required this.user, this.passedIndex = 0});
 
   @override
-  _HomeMainPageState createState() => _HomeMainPageState(user);
+  _HomeMainPageState createState() => _HomeMainPageState(user, passedIndex);
 }
 
 class _HomeMainPageState extends State<HomeMainPage> {
   DocumentSnapshot user;
-  _HomeMainPageState(this.user);
+  int passedIndex;
+  _HomeMainPageState(this.user, this.passedIndex);
   
-  PageController _pageController = PageController();
-  int _currentIndex = 0;
+  late PageController _pageController;
+  late int _currentIndex;
+
+  @override
+  void initState() { 
+    super.initState();
+    _pageController = PageController(initialPage: passedIndex);
+    _currentIndex = passedIndex;
+  }
 
   
 
@@ -41,6 +50,8 @@ class _HomeMainPageState extends State<HomeMainPage> {
       Scaffold(appBar: AppBar(title: Text('To be Made'),),), 
       ProfilePage(user: this.user),
     ];
+
+    print("current index----in build function------${_currentIndex}");
 
     return Scaffold(
       body: PageView(

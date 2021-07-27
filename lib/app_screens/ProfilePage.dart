@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:insta/common/CustomCircularAvatar.dart';
+import 'package:insta/screenArguments.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget{
@@ -32,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClient
             )),
             SliverToBoxAdapter(child: Padding(
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-              child: EditButton(),
+              child: EditButton(widget.user),
             )),
             ProfileGrid(),
           ],
@@ -79,8 +80,7 @@ Header(user){
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomCircularAvatar(
-                isNetworkImage: (user['profile-pic']==null)? false : true,
-                imgPath: user['profile-pic'] ?? 'Loki.jpg',
+                imgPath: user['profile-pic'],
                 storyRing: true,
                 storySeen: true,
                 width: 90,
@@ -179,14 +179,17 @@ Header(user){
 // }
 
 class EditButton extends StatelessWidget {
-  const EditButton({ Key? key }) : super(key: key);
+  final DocumentSnapshot user;
+  const EditButton(this.user, { Key? key }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
         width: double.infinity,
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).pushNamed('/edit-profile', arguments: ScreenArguments(userDoc: user));
+          },
           child: Text('Edit Profile' ,style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),),
           style: ElevatedButton.styleFrom(
             elevation: 0,
