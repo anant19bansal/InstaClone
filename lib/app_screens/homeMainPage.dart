@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:insta/app_screens/ProfilePage.dart';
 import 'package:insta/app_screens/homeScreen.dart';
 import 'package:insta/app_screens/searchPage.dart';
+import 'package:insta/screenArguments.dart';
 
 class HomeMainPage extends StatefulWidget {
   final DocumentSnapshot user;
@@ -22,6 +23,8 @@ class _HomeMainPageState extends State<HomeMainPage> {
   DocumentSnapshot user;
   int passedIndex;
   _HomeMainPageState(this.user, this.passedIndex);
+  String postCaption = '';
+  TextEditingController _caption = TextEditingController();
   late FirebaseStorage _storage;
   late CollectionReference _usersCollection;
   late CollectionReference _postsCollection; 
@@ -50,17 +53,29 @@ class _HomeMainPageState extends State<HomeMainPage> {
   addPostedImage(String downloadUrl) async{
     try {
       await _postsCollection.doc().set({
-            'caption': 'sample caption',
+            'caption': postCaption,
             'profile_pic': user['profile-pic'],
             'name': user['name'],
             'type': 'image',
             'postUrl': downloadUrl,
             'created_at': FieldValue.serverTimestamp(),
-      });  
+      });
+      Navigator.of(context).pushReplacementNamed('/home', arguments: ScreenArguments(userDoc: user));
+      // setState(() {});  
     } catch (e) {
       print('Error in addPostImage function in home main page*********: $e');
     }
     
+  }
+
+  upload(File imagePath) async {
+    final String destination = "/posts/user${user['id']}/post${DateTime.now().millisecondsSinceEpoch}";
+    final ref = await _storage.ref().child(destination);
+    final uploadTask = await ref.putFile(imagePath);  
+    print('fine till here*************');
+    final downloadUrl = await _storage.ref(destination).getDownloadURL();
+    print(downloadUrl);
+    addPostedImage(downloadUrl);
   }
 
   selectImageSource(ImageSource source) async {
@@ -71,13 +86,71 @@ class _HomeMainPageState extends State<HomeMainPage> {
       if(_postImage!=null){
         final imagePath = File(_postImage.path); 
         print (imagePath);
-        final String destination = "/posts/user${user['id']}/post${DateTime.now().millisecondsSinceEpoch}";
-        final ref = await _storage.ref().child(destination);
-        final uploadTask = await ref.putFile(imagePath);  
-        print('fine till here*************');
-        final downloadUrl = await _storage.ref(destination).getDownloadURL();
-        print(downloadUrl);
-        addPostedImage(downloadUrl);
+        showDialog(
+          context: context, 
+          builder: (context) => AlertDialog(
+            title: Text(
+              'Add a Caption', 
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            content: Builder(
+              builder: (context){
+                var _height = MediaQuery.of(context).size.height;
+                var _width = MediaQuery.of(context).size.width;
+                return Container(
+                  height: 150,
+                  width: _width-100,
+                    margin: EdgeInsets.only(top: 20),
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(bottom: 30),
+                          child: TextField(
+                            cursorWidth: 1,
+                            cursorColor: Colors.white,
+                            controller: _caption,
+                            maxLines: null,
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                postCaption = _caption.text;
+                                _caption.clear();
+                                postCaption = '';
+                              }, 
+                              child: Text('Cancel Upload'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                postCaption = _caption.text;
+                                _caption.clear();
+                                print(postCaption);
+                                upload(imagePath);
+                              }, 
+                              child: Text('Upload'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+              }, 
+            ),
+          ),
+        );
+        // final String destination = "/posts/user${user['id']}/post${DateTime.now().millisecondsSinceEpoch}";
+        // final ref = await _storage.ref().child(destination);
+        // final uploadTask = await ref.putFile(imagePath);  
+        // print('fine till here*************');
+        // final downloadUrl = await _storage.ref(destination).getDownloadURL();
+        // print(downloadUrl);
+        // addPostedImage(downloadUrl);
       }
     } catch (e) {
       print('Error in selectImageSource function inside home main page******: $e');

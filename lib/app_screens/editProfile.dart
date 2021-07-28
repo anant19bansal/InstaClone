@@ -123,7 +123,7 @@ _EditProfileState(this.user);
               leading: Icon(Icons.camera_alt),
               title: Text('Camera'),
               onTap: () {
-                Navigator.pop(context);
+                // Navigator.pop(context);
                 selectImageSource(ImageSource.camera);
               },
             ),
