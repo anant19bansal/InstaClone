@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:insta/app_screens/dmPage.dart';
 import 'package:insta/app_screens/editProfile.dart';
@@ -7,12 +6,11 @@ import 'package:insta/app_screens/homeMainPage.dart';
 import 'package:insta/app_screens/logIn.dart';
 import 'package:insta/app_screens/signUp.dart';
 import 'package:insta/screenArguments.dart';
-// import 'package:insta/common/MyBottomNavBar.dart';
 
 class RouteGenerator{
   static Route<dynamic> generateRoute(RouteSettings settings){
 
-    final _args = settings.arguments as ScreenArguments;
+    final _args = (settings.arguments!=null)? settings.arguments as ScreenArguments: settings.arguments;
 
     switch(settings.name){
       case '/':
@@ -24,10 +22,17 @@ class RouteGenerator{
       case '/dms':
         return MaterialPageRoute(builder: (context) => DmPage());
       case '/edit-profile':
-        return MaterialPageRoute(builder: (context) => EditProfile(user: _args.userDoc));
+        if(_args is ScreenArguments){
+          return MaterialPageRoute(builder: (context) => EditProfile(user: _args.userDoc));
+        }else{
+          return MaterialPageRoute(builder: (context) => Container(child: Center(child: Text('Error in routing, should not have landed here')),));
+        }
       case '/home':
-        return MaterialPageRoute(builder: (context) => HomeMainPage(user: _args.userDoc, passedIndex:_args.selectedIndex));
-        
+      if(_args is ScreenArguments){
+          return MaterialPageRoute(builder: (context) => HomeMainPage(user: _args.userDoc, passedIndex:_args.selectedIndex));
+        }else{
+          return MaterialPageRoute(builder: (context) => Container(child: Center(child: Text('Error in routing, should not have landed here')),));
+        }
       default:
         return MaterialPageRoute(builder: (context) => LogIn());
     }

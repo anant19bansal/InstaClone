@@ -56,6 +56,7 @@ class _HomeMainPageState extends State<HomeMainPage> {
             'caption': postCaption,
             'profile_pic': user['profile-pic'],
             'name': user['name'],
+            'email': user['email'],
             'type': 'image',
             'postUrl': downloadUrl,
             'created_at': FieldValue.serverTimestamp(),
@@ -71,8 +72,7 @@ class _HomeMainPageState extends State<HomeMainPage> {
   upload(File imagePath) async {
     final String destination = "/posts/user${user['id']}/post${DateTime.now().millisecondsSinceEpoch}";
     final ref = await _storage.ref().child(destination);
-    final uploadTask = await ref.putFile(imagePath);  
-    print('fine till here*************');
+    final uploadTask = await ref.putFile(imagePath);
     final downloadUrl = await _storage.ref(destination).getDownloadURL();
     print(downloadUrl);
     addPostedImage(downloadUrl);
@@ -144,13 +144,6 @@ class _HomeMainPageState extends State<HomeMainPage> {
             ),
           ),
         );
-        // final String destination = "/posts/user${user['id']}/post${DateTime.now().millisecondsSinceEpoch}";
-        // final ref = await _storage.ref().child(destination);
-        // final uploadTask = await ref.putFile(imagePath);  
-        // print('fine till here*************');
-        // final downloadUrl = await _storage.ref(destination).getDownloadURL();
-        // print(downloadUrl);
-        // addPostedImage(downloadUrl);
       }
     } catch (e) {
       print('Error in selectImageSource function inside home main page******: $e');
@@ -242,8 +235,6 @@ class _HomeMainPageState extends State<HomeMainPage> {
       ProfilePage(user: this.user),
     ];
 
-    print("current index----in build function------${_currentIndex}");
-
     return Scaffold(
       body: PageView(
         controller: _pageController,
@@ -252,6 +243,7 @@ class _HomeMainPageState extends State<HomeMainPage> {
         physics: NeverScrollableScrollPhysics(),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.white,
         currentIndex: _currentIndex,
         onTap: _onTapBottomNavIcon,
         backgroundColor: Colors.grey[900],
@@ -280,8 +272,7 @@ class _HomeMainPageState extends State<HomeMainPage> {
             label: 'Profile', 
           ),
         ],
-      ),
-      
+      ), 
     );
   }
 }
