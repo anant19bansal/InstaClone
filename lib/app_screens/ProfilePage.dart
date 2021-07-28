@@ -14,6 +14,7 @@ class ProfilePage extends StatefulWidget{
 }
 
 class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientMixin{
+  int totalPosts = 0;
 
   @override
   bool get wantKeepAlive => true;
@@ -46,7 +47,7 @@ class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClient
         ]
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('posts').where('name', isEqualTo: widget.user['name']).orderBy('created_at', descending: true).snapshots(),
+        stream: FirebaseFirestore.instance.collection('posts').where('email', isEqualTo: widget.user['email']).orderBy('created_at', descending: true).snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           return (snapshot.hasData && snapshot.data!=null)?Container(
             color: Colors.grey[900],

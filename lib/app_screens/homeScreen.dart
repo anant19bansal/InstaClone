@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:insta/common/CustomCircularAvatar.dart';
 import 'package:insta/common/InstaLogo.dart';
@@ -13,6 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   List posts = [];
   bool _pageInitialized = false;
+  String userImage='';
 
   @override
   bool get wantKeepAlive => true;
@@ -29,8 +31,12 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
       result.docs.forEach((element) { 
         posts.add(element);
       });
+      final _userId = await FirebaseAuth.instance.currentUser!.uid;
+      final _userImage = await FirebaseFirestore.instance.collection('users').doc(_userId).get();
       setState(() {
+        userImage = _userImage['profile-pic'];
         _pageInitialized = true;
+        
       });
       // print(posts);  
     } catch (e) {
@@ -43,12 +49,13 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
   Widget build(BuildContext context) {
     super.build(context);
     return (_pageInitialized)? Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBarHomePage(context),
       body: Container(
         color: Colors.black,
         child: SingleChildScrollView(
           physics: ScrollPhysics(),
-          child: HomePosts(posts),
+          child: HomePosts(posts, userImage: userImage),
         ),
       ),
     )
@@ -99,7 +106,8 @@ class AppBarHomePage extends AppBar {
 
 class HomePosts extends StatefulWidget {
   final List posts;
-  const HomePosts(this.posts, { Key? key }) : super(key: key);
+  final userImage;
+  const HomePosts(this.posts, {required this.userImage, Key? key }) : super(key: key);
 
   @override
   _HomePostsState createState() => _HomePostsState();
@@ -118,15 +126,15 @@ class _HomePostsState extends State<HomePosts> {
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              getStories(imgPath: 'Loki.jpg', author:'Your Story', storyRing: true, storySeen: false),
-              getStories(imgPath: 'Sylvie.jpg', author:'Sylvie', storyRing: true, storySeen: false),
-              getStories(imgPath: 'Mobius.jpg', author:'Mobius', storyRing: true, storySeen: false),
-              getStories(imgPath: 'wanda.jpg', author:'Wanda', storyRing: true, storySeen: false),
-              getStories(imgPath: 'DrStrange.jpg', author:'Dr. Strange', storyRing: true, storySeen: false),
-              getStories(imgPath: 'Thor.jpg', author:'Thor', storyRing: true, storySeen: true),
-              getStories(imgPath: 'Danvers.jpg', author:'Danvers', storyRing: true, storySeen: true),
-              getStories(imgPath: 'Steve.jpg', author:'Steve', storyRing: true, storySeen: true),
-              getStories(imgPath: 'IronMan.jpg', author:'Iron Man', storyRing: true, storySeen: true),
+              getStories(imgPath: widget.userImage, author:'Your Story', storyRing: true, storySeen: false),
+              getStories(imgPath: 'https://i0.wp.com/mtcritics.com/wp-content/uploads/2021/07/Sophia-Di-Martino-Reveals-The-Difficulty-She-Faced-In-Loki.png?fit=700%2C525&ssl=1', author:'Sylvie', storyRing: true, storySeen: false),
+              getStories(imgPath: 'https://am22.mediaite.com/tms/cnt/uploads/2021/06/Loki-and-Mobius.jpg', author:'Mobius', storyRing: true, storySeen: false),
+              getStories(imgPath: 'https://i.insider.com/60491083f196be0018bee9db?width=750&format=jpeg&auto=webp', author:'Wanda', storyRing: true, storySeen: false),
+              getStories(imgPath: 'https://cdn.vox-cdn.com/thumbor/8w6m6Sdl8fkNt7UWPJr5hhNasqA=/0x0:1500x750/1400x1400/filters:focal(762x94:1002x334):format(jpeg)/cdn.vox-cdn.com/uploads/chorus_image/image/51717777/strange.0.jpg', author:'Dr. Strange', storyRing: true, storySeen: false),
+              getStories(imgPath: 'https://images.hindustantimes.com/rf/image_size_630x354/HT/p2/2019/04/17/Pictures/_b4fc009c-60e8-11e9-a01d-452d93af50a1.jpg', author:'Thor', storyRing: true, storySeen: true),
+              getStories(imgPath: 'https://wallpaperaccess.com/full/2155536.jpg', author:'Danvers', storyRing: true, storySeen: true),
+              getStories(imgPath: 'https://qph.fs.quoracdn.net/main-qimg-ed6a2986e8560446cef20a5e0ce5e102', author:'Steve', storyRing: true, storySeen: true),
+              getStories(imgPath: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPX1alugCyZ11C9z6dL3FhIBzdUc8kdj8aYbPX3NZAHiBHUNudwXQT0E6XtXFaMEeqFfE&usqp=CAU', author:'Iron Man', storyRing: true, storySeen: true),
             ],
           ),
         ),

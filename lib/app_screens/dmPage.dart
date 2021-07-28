@@ -12,15 +12,15 @@ class DmPage extends StatefulWidget {
 class _DmPageState extends State<DmPage> {
   String userName = 'Loki';
   List<Widget> dmList = [
-    DmList(imgPath:'Danvers.jpg', storySeen: true, name: 'Danvers', lastMessage: 'see you soon..', time: 'now', storyRing: true,),
-    DmList(imgPath:'Thor.jpg', storySeen: false, name: 'Thor', lastMessage: 'see you soon..', time: 'now', storyRing: true,),
-    DmList(imgPath:'Mobius.jpg', storySeen: false, name: 'Mobius', lastMessage: 'see you soon..', time: '1m', storyRing: true,),
-    DmList(imgPath:'DrStrange.jpg', storySeen: true, name: 'Dr. Strange', lastMessage: 'see you soon..', time: '2m', storyRing: false,),
-    DmList(imgPath:'Sylvie.jpg', storySeen: true, name: 'Sylvie', lastMessage: 'see you soon..', time: '5m', storyRing: true,),
-    DmList(imgPath:'wanda.jpg', storySeen: false, name: 'Wanda', lastMessage: 'see you soon..', time: '10m', storyRing: true,),
-    DmList(imgPath:'Steve.jpg', storySeen: false, name: 'Steve', lastMessage: 'see you soon..', time: '15m', storyRing: true,),
-    DmList(imgPath:'IronMan.jpg', storySeen: false, name: 'IronMan', lastMessage: 'see you soon..', time: '1h', storyRing: true,),
-    DmList(imgPath:'Loki.jpg', storySeen: false, name: 'President Loki', lastMessage: 'see you soon..', time: '3h', storyRing: true,),
+    DmList(imgPath:'https://wallpaperaccess.com/full/2155536.jpg', storySeen: true, name: 'Danvers', lastMessage: 'see you soon..', time: 'now', storyRing: true,),
+    DmList(imgPath:'https://images.hindustantimes.com/rf/image_size_630x354/HT/p2/2019/04/17/Pictures/_b4fc009c-60e8-11e9-a01d-452d93af50a1.jpg', storySeen: false, name: 'Thor', lastMessage: 'see you soon..', time: 'now', storyRing: true,),
+    DmList(imgPath:'https://am22.mediaite.com/tms/cnt/uploads/2021/06/Loki-and-Mobius.jpg', storySeen: false, name: 'Mobius', lastMessage: 'see you soon..', time: '1m', storyRing: true,),
+    DmList(imgPath:'https://cdn.vox-cdn.com/thumbor/8w6m6Sdl8fkNt7UWPJr5hhNasqA=/0x0:1500x750/1400x1400/filters:focal(762x94:1002x334):format(jpeg)/cdn.vox-cdn.com/uploads/chorus_image/image/51717777/strange.0.jpg', storySeen: true, name: 'Dr. Strange', lastMessage: 'see you soon..', time: '2m', storyRing: false,),
+    DmList(imgPath:'https://i0.wp.com/mtcritics.com/wp-content/uploads/2021/07/Sophia-Di-Martino-Reveals-The-Difficulty-She-Faced-In-Loki.png?fit=700%2C525&ssl=1', storySeen: true, name: 'Sylvie', lastMessage: 'see you soon..', time: '5m', storyRing: true,),
+    DmList(imgPath:'https://i.insider.com/60491083f196be0018bee9db?width=750&format=jpeg&auto=webp', storySeen: false, name: 'Wanda', lastMessage: 'see you soon..', time: '10m', storyRing: true,),
+    DmList(imgPath:'https://qph.fs.quoracdn.net/main-qimg-ed6a2986e8560446cef20a5e0ce5e102', storySeen: false, name: 'Steve', lastMessage: 'see you soon..', time: '15m', storyRing: true,),
+    DmList(imgPath:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPX1alugCyZ11C9z6dL3FhIBzdUc8kdj8aYbPX3NZAHiBHUNudwXQT0E6XtXFaMEeqFfE&usqp=CAU', storySeen: false, name: 'IronMan', lastMessage: 'see you soon..', time: '1h', storyRing: true,),
+    DmList(imgPath:'https://static.wikia.nocookie.net/disney/images/1/1b/Profile_-_Loki_%28Thor_Ragnarok%29.jpg/revision/latest?cb=20210421185239', storySeen: false, name: 'President Loki', lastMessage: 'see you soon..', time: '3h', storyRing: true,),
   ];
   @override
   Widget build(BuildContext context) {
