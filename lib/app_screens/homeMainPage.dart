@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:insta/app_screens/ProfilePage.dart';
 import 'package:insta/app_screens/homeScreen.dart';
 import 'package:insta/app_screens/searchPage.dart';
@@ -14,9 +18,13 @@ class HomeMainPage extends StatefulWidget {
 }
 
 class _HomeMainPageState extends State<HomeMainPage> {
+  bool isVideo = false;
   DocumentSnapshot user;
   int passedIndex;
   _HomeMainPageState(this.user, this.passedIndex);
+  late FirebaseStorage _storage;
+  late CollectionReference _usersCollection;
+  late CollectionReference _postsCollection; 
   
   late PageController _pageController;
   late int _currentIndex;
@@ -26,10 +34,116 @@ class _HomeMainPageState extends State<HomeMainPage> {
     super.initState();
     _pageController = PageController(initialPage: passedIndex);
     _currentIndex = passedIndex;
+    initialize();
+  }
+
+  initialize() async{
+    try {
+      _postsCollection = await FirebaseFirestore.instance.collection('posts');  
+      _usersCollection = await FirebaseFirestore.instance.collection('users');  
+      _storage = await FirebaseStorage.instance;
+    } catch (err) {
+      print('Error in inititalize function in home main page*********: $err');
+    }
+  }
+
+  addPostedImage(String downloadUrl) async{
+    try {
+      await _postsCollection.doc().set({
+            'caption': 'sample caption',
+            'profile_pic': user['profile-pic'],
+            'name': user['name'],
+            'type': 'image',
+            'postUrl': downloadUrl,
+            'created_at': FieldValue.serverTimestamp(),
+      });  
+    } catch (e) {
+      print('Error in addPostImage function in home main page*********: $e');
+    }
+    
+  }
+
+  selectImageSource(ImageSource source) async {
+    try {
+      //open image picker
+      final picker = ImagePicker();
+      XFile? _postImage = await picker.pickImage(source: source);
+      if(_postImage!=null){
+        final imagePath = File(_postImage.path); 
+        print (imagePath);
+        final String destination = "/posts/user${user['id']}/post${DateTime.now().millisecondsSinceEpoch}";
+        final ref = await _storage.ref().child(destination);
+        final uploadTask = await ref.putFile(imagePath);  
+        print('fine till here*************');
+        final downloadUrl = await _storage.ref(destination).getDownloadURL();
+        print(downloadUrl);
+        addPostedImage(downloadUrl);
+      }
+    } catch (e) {
+      print('Error in selectImageSource function inside home main page******: $e');
+    }
+  }
+
+  uploadPost(){
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context, 
+        builder: (context) => FractionallySizedBox(
+          heightFactor: 0.4,
+          child:ListView(
+            children: [
+              Container(
+                margin: EdgeInsets.only(top: 20, bottom: 10),
+                child: Center(
+                  child: Text(
+                    'Upload Post',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text('Take a Photo'),
+                onTap: () {
+                  Navigator.pop(context);
+                  selectImageSource(ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo),
+                title: Text('Upload image from Gallery'),
+                onTap: () {
+                  Navigator.pop(context);
+                  selectImageSource(ImageSource.gallery);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.videocam),
+                title: Text('Take a Video'),
+                onTap: () {
+                  Navigator.pop(context);
+                  isVideo = true;
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.video_library),
+                title: Text('Upload video from Gallery'),
+                onTap: () {
+                  Navigator.pop(context);
+                  isVideo = true;
+                },
+              ),
+            ],
+            
+          ),
+        ),
+      ); 
   }
 
   
-
   _onPageChanged(int index){
     setState(() {
       _currentIndex = index;
@@ -37,7 +151,11 @@ class _HomeMainPageState extends State<HomeMainPage> {
   }
   
   _onTapBottomNavIcon(int selectedIndex){
-    _pageController.jumpToPage(selectedIndex);
+    if(selectedIndex == 2){
+      uploadPost();
+    }else{
+      _pageController.jumpToPage(selectedIndex);
+    }
   }
   
   @override
@@ -46,7 +164,7 @@ class _HomeMainPageState extends State<HomeMainPage> {
     List<Widget> _screens = [
       HomePage(), 
       SearchPage(),  
-      Scaffold(appBar: AppBar(title: Text('To be Made'),),), 
+      HomePage(),
       Scaffold(appBar: AppBar(title: Text('To be Made'),),), 
       ProfilePage(user: this.user),
     ];
