@@ -35,6 +35,8 @@ class _HomeMainPageState extends State<HomeMainPage> {
   @override
   void initState() { 
     super.initState();
+    print("***user***: $user");
+    print(user['name']);
     _pageController = PageController(initialPage: passedIndex);
     _currentIndex = passedIndex;
     initialize();
@@ -232,7 +234,7 @@ class _HomeMainPageState extends State<HomeMainPage> {
       SearchPage(),  
       HomePage(),
       Scaffold(appBar: AppBar(title: Text('To be Made'),),), 
-      ProfilePage(user: this.user),
+      ProfilePage(user: user),
     ];
 
     return Scaffold(

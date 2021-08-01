@@ -47,11 +47,14 @@ class _SignUpState extends State<SignUp> {
         if(userInDB.length==0){
           await _usersCollection.doc(user.uid).set({
             'id': user.uid,
-            // 'username': user.displayName,
+            'username': _name.text,
             'name': _name.text,
-            'profile-pic': user.photoURL,
+            'profile-pic': user.photoURL ?? 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
             'email': user.email,
             'phone-number': user.phoneNumber,
+            'bio':"",
+            'gender':"",
+            'searchKey':_name.text.substring(0,1).toUpperCase(),
           });
         }
 

@@ -64,11 +64,14 @@ class _FirstPageState extends State<FirstPage> {
         if(userInDB.length==0){
           await usersCollection.doc(user.uid).set({
             'id': user.uid,
-            // 'username': user.displayName,
+            'username': user.displayName,
             'name': user.displayName,
             'profile-pic': user.photoURL,
             'email': user.email,
             'phone-number': user.phoneNumber,
+            'bio':"",
+            'gender':"",
+            'searchKey':(user.displayName!=null)?user.displayName!.substring(0,1).toUpperCase():"A",
           });
         }
 

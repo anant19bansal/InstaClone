@@ -63,6 +63,7 @@ _EditProfileState(this.user);
           'phone-number': (_phone.text.isNotEmpty)?_phone.text:user['phone-number'],
           'bio': (_bio.text.isNotEmpty)?_bio.text:(user['bio'] ?? ''),
           'gender': (_gender.text.isNotEmpty)?_gender:(user['gender'] ?? ''),
+          'searchKey':(_name.text.isNotEmpty)?_name.text.substring(0,1).toUpperCase():user['searchKey'],
         });
         final userAuth =  await _auth.currentUser;
         if(userAuth!=null){

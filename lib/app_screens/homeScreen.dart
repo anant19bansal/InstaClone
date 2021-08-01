@@ -36,7 +36,6 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
       setState(() {
         userImage = _userImage['profile-pic'];
         _pageInitialized = true;
-        
       });
       // print(posts);  
     } catch (e) {

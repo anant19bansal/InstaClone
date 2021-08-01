@@ -4,12 +4,12 @@ class CustomCircularAvatar extends StatefulWidget {
   // final bool isNetworkImage;
   final bool storyRing;
   final bool storySeen;
-  final String imgPath;
+  String imgPath;
   final double radius;
   final EdgeInsetsGeometry? margin;
   final double width;
   final double paddingBetween;
-  const CustomCircularAvatar({ Key? key,
+  CustomCircularAvatar({ Key? key,
     // required this.isNetworkImage, 
     required this.storyRing, 
     this.storySeen=false, 
@@ -28,6 +28,7 @@ class _CustomCircularAvatarState extends State<CustomCircularAvatar> {
   @override
   Widget build(BuildContext context) {
     
+    widget.imgPath = (widget.imgPath.isNotEmpty)?widget.imgPath:'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
     return Container(
       child: (widget.storyRing)?withRing():withoutRing(),
     );

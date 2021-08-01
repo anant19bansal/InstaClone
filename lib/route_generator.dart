@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insta/app_screens/ProfilePage.dart';
 import 'package:insta/app_screens/dmPage.dart';
 import 'package:insta/app_screens/editProfile.dart';
 import 'package:insta/app_screens/firstPage.dart';
@@ -25,13 +26,19 @@ class RouteGenerator{
         if(_args is ScreenArguments){
           return MaterialPageRoute(builder: (context) => EditProfile(user: _args.userDoc));
         }else{
-          return MaterialPageRoute(builder: (context) => Container(child: Center(child: Text('Error in routing, should not have landed here')),));
+          return MaterialPageRoute(builder: (context) => Container(child: Center(child: Text('Error in routing, should not have landed here 1')),));
         }
       case '/home':
       if(_args is ScreenArguments){
           return MaterialPageRoute(builder: (context) => HomeMainPage(user: _args.userDoc, passedIndex:_args.selectedIndex));
         }else{
-          return MaterialPageRoute(builder: (context) => Container(child: Center(child: Text('Error in routing, should not have landed here')),));
+          return MaterialPageRoute(builder: (context) => Container(child: Center(child: Text('Error in routing, should not have landed here 2')),));
+        }
+      case '/profile':
+        if(_args is ScreenArguments){
+          return MaterialPageRoute(builder: (context) => ProfilePage(user: _args.userDoc));
+        }else{
+          return MaterialPageRoute(builder: (context) => Container(child: Center(child: Text('Error in routing, should not have landed here 3')),));
         }
       default:
         return MaterialPageRoute(builder: (context) => LogIn());
