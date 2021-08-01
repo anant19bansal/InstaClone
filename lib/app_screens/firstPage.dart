@@ -72,6 +72,10 @@ class _FirstPageState extends State<FirstPage> {
             'bio':"",
             'gender':"",
             'searchKey':(user.displayName!=null)?user.displayName!.substring(0,1).toUpperCase():"A",
+            'num-posts': 0,
+            'num-followers':0,
+            'num-following':0,
+            'followers':[],
           });
         }
 

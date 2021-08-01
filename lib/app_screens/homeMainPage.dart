@@ -63,6 +63,9 @@ class _HomeMainPageState extends State<HomeMainPage> {
             'postUrl': downloadUrl,
             'created_at': FieldValue.serverTimestamp(),
       });
+      await _usersCollection.doc(user['id']).update({
+        'num-posts':FieldValue.increment(1),
+      });
       Navigator.of(context).pushReplacementNamed('/home', arguments: ScreenArguments(userDoc: user));
       // setState(() {});  
     } catch (e) {

@@ -55,6 +55,10 @@ class _SignUpState extends State<SignUp> {
             'bio':"",
             'gender':"",
             'searchKey':_name.text.substring(0,1).toUpperCase(),
+            'num-posts':0,
+            'num-followers':0,
+            'num-following':0,
+            'followers':[],
           });
         }
 

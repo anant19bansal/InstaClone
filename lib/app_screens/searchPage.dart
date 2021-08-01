@@ -14,6 +14,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMixin {
   List<DocumentSnapshot> _querySearchStore = [];
   List<DocumentSnapshot> _tempSearchStore = [];
+  // TextEditingController _searchController = TextEditingController();
   
   @override
   bool get wantKeepAlive => true;
@@ -46,10 +47,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             });
           }
         });
-      }
-      // _tempSearchStore.forEach((element) {
-      //   print(element['name']);
-      // });  
+      }  
     } catch (e) {
       print('Error in initializeSearch function in search page********* : $e');
     }
@@ -73,6 +71,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                     child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       child: TextField(
+                        // controller: _searchController,
                         onChanged: (val) {
                           initiateSearch(val);
                         },
@@ -167,6 +166,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                 ),
                 child: GestureDetector(
                   onTap: (){
+                    // _searchController.clear();
                     Navigator.of(context).pushNamed('/profile', arguments:ScreenArguments(userDoc: doc));
                   },
                   child: ListTile(
@@ -180,63 +180,3 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     );
   }
 }
-
-// class AppBarSearchPage extends PreferredSize {
-//   AppBarSearchPage(BuildContext context)
-//       : super(
-//           preferredSize: Size.fromHeight(80),
-//           child: AppBar(
-//             automaticallyImplyLeading: false,
-//             elevation: 0,
-//             bottom: PreferredSize(
-//               preferredSize: Size.fromHeight(0),
-//               child: Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                 children: [
-//                   Expanded(
-//                     child: Container(
-//                       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-//                       child: TextField(
-//                         onChanged: (val) {
-//                           initializeSearch(val);
-//                         },
-//                         style: TextStyle(
-//                           fontSize: 20,
-//                         ),
-//                         cursorColor: Colors.white,
-//                         cursorWidth: 0.5,
-//                         cursorHeight: 23,
-//                         decoration: InputDecoration(
-//                           prefixIcon: Icon(
-//                             Icons.search,
-//                             size: 25,
-//                           ),
-//                           filled: true,
-//                           fillColor: Colors.grey[800],
-//                           hintText: 'Search',
-//                           contentPadding: EdgeInsets.symmetric(
-//                               horizontal: 15, vertical: 14),
-//                           border: OutlineInputBorder(
-//                             borderRadius: BorderRadius.circular(15),
-//                             borderSide: BorderSide(
-//                               width: 0,
-//                               style: BorderStyle.none,
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                   Container(
-//                     margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
-//                     child: Icon(
-//                       Icons.fullscreen_rounded,
-//                       size: 40,
-//                     ),
-//                   )
-//                 ],
-//               ),
-//             ),
-//           ),
-//         );
-// }

@@ -10,31 +10,79 @@ class ProfilePage extends StatefulWidget{
   const ProfilePage({ Key? key , required this.user}) : super(key: key);
 
   @override
-  _ProfilePageState createState() => _ProfilePageState(user['id']);
+  _ProfilePageState createState() => _ProfilePageState(user:user);
 }
 
 class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientMixin{
-  bool _pageInitialized = true;
+  late CollectionReference ref;
+  List _followers=[];
+  bool _isBeingFollowed = false;
+  int _numFollowers = 0;
+  int _numFollowing = 0;
+  int _numPosts = 0;
+  bool _pageInitialized = false;
   bool _isOtherUserProfile = false;
-  String _profileId;
-  _ProfilePageState(this._profileId);
+  String? _authUserId = "";
+  DocumentSnapshot user;
+  _ProfilePageState({required this.user});
 
   int totalPosts = 0;
   @override
-  void initState() { 
+  void initState() {
+    // print('******************profile initializer called********************'); 
     super.initState();
-    print('profile page is here');
     initialize();
   }
 
   initialize() async{
+    // print('initialize called');
+    ref = await FirebaseFirestore.instance.collection('users');
+    user = await ref.doc(user['id']).get();
+    _followers = user['followers'];
+    // print(_followers);
     SharedPreferences _preferences = await SharedPreferences.getInstance();
-    final userId = _preferences.getString('id');
-    if(userId != _profileId){
+    _authUserId = _preferences.getString('id');
+    if(_authUserId != user['id']){
       _isOtherUserProfile = true;
     }
     setState(() {
+      // print('setState inside initialize called');
+      if(_followers.contains(_authUserId)){
+        _isBeingFollowed = true;
+      }
+      // print('Inside initialize');
+      // print(_isBeingFollowed);
+      // print(_followers);
+      
+      _numPosts = user['num-posts'];
+      _numFollowers = user['num-followers'];
+      _numFollowing = user['num-following'];
       _pageInitialized = true;
+    });
+  }
+
+  handleFollow() async{
+    if(_isBeingFollowed==false){
+      await ref.doc(user['id']).update({
+        'num-followers': FieldValue.increment(1),
+        'followers': FieldValue.arrayUnion([_authUserId]),
+      });
+      await ref.doc(_authUserId).update({
+        'num-following': FieldValue.increment(1),
+      });
+    }else{
+      await ref.doc(user['id']).update({
+        'num-followers': FieldValue.increment(-1),
+        'followers': FieldValue.arrayRemove([_authUserId]),
+      });
+      await ref.doc(_authUserId).update({
+        'num-following': FieldValue.increment(-1),
+      });
+    }
+    setState(() {
+      _numFollowers = (_isBeingFollowed)?_numFollowers-1:_numFollowers+1;
+      print(_isBeingFollowed);
+      _isBeingFollowed = !_isBeingFollowed;
     });
   }
 
@@ -44,7 +92,6 @@ class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClient
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    print('here in build function');
     return (_pageInitialized)?Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -55,7 +102,7 @@ class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClient
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.lock),
-              Text((widget.user['username'].isEmpty)?widget.user['name']:widget.user['username']),
+              Text((user['username'].isEmpty)?user['name']:user['username']),
               Icon(Icons.keyboard_arrow_down),
             ],
           ),
@@ -66,27 +113,28 @@ class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClient
               await FirebaseAuth.instance.signOut();
               final preferences = await SharedPreferences.getInstance();
               preferences.clear();
-              Navigator.of(context).pushReplacementNamed('/');
+              Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
             }, 
             child: Text('Logout', style: TextStyle(color: Colors.white),),
           ),
         ]
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('posts').where('email', isEqualTo: widget.user['email']).orderBy('created_at', descending: true).snapshots(),
+        stream: FirebaseFirestore.instance.collection('posts').where('email', isEqualTo: user['email']).orderBy('created_at', descending: true).snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          return (snapshot.hasData && snapshot.data!=null)?Container(
+          if ((snapshot.hasData && snapshot.data!=null)) {
+            return Container(
             color: Colors.grey[900],
             child: CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(child: Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: Header(widget.user),
+                  child: Header(user),
                 )),
                 SliverToBoxAdapter(child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                   child: (_isOtherUserProfile==false)
-                  ?EditButton(widget.user)
+                  ?EditButton(user)
                   :Container(
                     margin: EdgeInsets.only(top: 0),
                     child: Row(
@@ -96,13 +144,13 @@ class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClient
                           // width: 150,
                           width: MediaQuery.of(context).size.width*0.4,
                           child: ElevatedButton(
-                            onPressed: (){}, 
-                            child: Text('Follow',
+                            onPressed: handleFollow, 
+                            child: Text(
+                              (_isBeingFollowed)?'Unfollow':'Follow',
                               style: TextStyle(fontSize: 18),
                             ),
                             style: ElevatedButton.styleFrom(
-                              elevation: 0,
-                              
+                              elevation: 0, 
                             ),
                           ),
                         ),
@@ -141,9 +189,10 @@ class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClient
                 ),
               ],
             ),  
-          )
-          :
-          Container();
+          );
+          } else {
+            return Container();
+          }
         }
       ),
     )
@@ -158,53 +207,53 @@ class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClient
       ),
     );
   }
-}
 
-Header(user){
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomCircularAvatar(
-                imgPath: user['profile-pic'],
-                storyRing: true,
-                storySeen: true,
-                width: 90,
-                paddingBetween: 4,
-              ),
+  Header(user){
+      return Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomCircularAvatar(
+                  imgPath: user['profile-pic'],
+                  storyRing: true,
+                  storySeen: true,
+                  width: 90,
+                  paddingBetween: 4,
+                ),
 
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('54', style: TextStyle(fontSize: 21),),
-                  Text('Posts', style: TextStyle(fontSize: 15),),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('834', style: TextStyle(fontSize: 21),),
-                  Text('Followers', style: TextStyle(fontSize: 15),),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('162', style: TextStyle(fontSize: 21),),
-                  Text('Following', style: TextStyle(fontSize: 15),),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 10,),
-          Text(user['name'], style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),),
-          Text(user['bio'], style: TextStyle(fontSize: 14),),
-        ],
-      ),
-    );
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(_numPosts.toString(), style: TextStyle(fontSize: 21),),
+                    Text('Posts', style: TextStyle(fontSize: 15),),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(_numFollowers.toString(), style: TextStyle(fontSize: 21),),
+                    Text('Followers', style: TextStyle(fontSize: 15),),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(_numFollowing.toString(), style: TextStyle(fontSize: 21),),
+                    Text('Following', style: TextStyle(fontSize: 15),),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 10,),
+            Text(user['name'], style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),),
+            Text(user['bio'], style: TextStyle(fontSize: 14),),
+          ],
+        ),
+      );
+  }
 }
 
 class EditButton extends StatelessWidget {
