@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:insta/common/CustomCircularAvatar.dart';
 import 'package:insta/common/InstaLogo.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -12,9 +13,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
-  List posts = [];
+  List<DocumentSnapshot> posts = [];
   bool _pageInitialized = false;
   String userImage='';
+  List likedPosts = [];
 
   @override
   bool get wantKeepAlive => true;
@@ -33,6 +35,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
       });
       final _userId = await FirebaseAuth.instance.currentUser!.uid;
       final _userImage = await FirebaseFirestore.instance.collection('users').doc(_userId).get();
+      likedPosts = _userImage['posts-liked'];
       setState(() {
         userImage = _userImage['profile-pic'];
         _pageInitialized = true;
@@ -54,7 +57,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
         color: Colors.black,
         child: SingleChildScrollView(
           physics: ScrollPhysics(),
-          child: HomePosts(posts, userImage: userImage),
+          child: HomePosts(posts, userImage: userImage, likedPosts: likedPosts),
         ),
       ),
     )
@@ -104,9 +107,10 @@ class AppBarHomePage extends AppBar {
 
 
 class HomePosts extends StatefulWidget {
-  final List posts;
+  final List likedPosts;
+  final List<DocumentSnapshot> posts;
   final userImage;
-  const HomePosts(this.posts, {required this.userImage, Key? key }) : super(key: key);
+  const HomePosts(this.posts, {required this.userImage, required this.likedPosts,Key? key }) : super(key: key);
 
   @override
   _HomePostsState createState() => _HomePostsState();
@@ -143,7 +147,12 @@ class _HomePostsState extends State<HomePosts> {
           shrinkWrap: true,
           itemCount: widget.posts.length,
           itemBuilder: (context, index) {
-            return Post(widget.posts[index]);
+            if(widget.likedPosts.contains(widget.posts[index].reference.id)){
+              return Post(widget.posts[index], isLiked: true);
+            }else{
+              return Post(widget.posts[index], isLiked: false);
+            }
+            
           },
         ),
       ],
@@ -169,20 +178,72 @@ Widget getStories({ required String imgPath, required String author, required bo
 
 
 class Post extends StatefulWidget {
-  final post;
-  const Post(this.post,{ Key? key}) : super(key: key);
+  final DocumentSnapshot post;
+  final bool isLiked;
+  Post(this.post,{required this.isLiked, Key? key}) : super(key: key);
 
   @override
-  _PostState createState() => _PostState();
+  _PostState createState() => _PostState(post, isLiked);
 }
 
 class _PostState extends State<Post> {
+  DocumentSnapshot _post;
   double letterSpace = 0.5;
-  bool isLiked = false;
+  bool isLiked;
+  bool postInitialized = false;
+  int likes = 0;
   var color = Colors.white;
+  late FirebaseFirestore _instance;
+  late String _userId;
+  List likedPosts = [];
+  _PostState(this._post, this.isLiked);
+
+  @override
+  void initState() { 
+    super.initState();
+    initialize();
+  }
+
+  void initialize() async{
+    color = (isLiked)?Colors.red:Colors.white;
+    likes = _post['num_likes'];
+    _instance = await FirebaseFirestore.instance;
+    SharedPreferences ins = await SharedPreferences.getInstance();
+    _userId = ins.getString('id')!;
+    setState(() {
+      postInitialized = true;
+    });
+  }
+
+
+  void increamentLike() async{
+    await _instance.collection('users').doc(_userId).update({
+      'posts-liked':FieldValue.arrayUnion([_post.reference.id.toString()]),
+    });
+    await _instance.collection('posts').doc(_post.reference.id).update({
+      'num_likes': FieldValue.increment(1),
+    });
+    setState(() {
+      likes = likes+1;
+    });
+  }
+
+  void decreamentLike() async{
+    await _instance.collection('users').doc(_userId).update({
+      'posts-liked':FieldValue.arrayRemove([_post.reference.id.toString()]),
+    });
+    await _instance.collection('posts').doc(_post.reference.id).update({
+      'num_likes': FieldValue.increment(-1),
+    });
+    setState(() {
+      likes = likes-1;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return (postInitialized)?Container(
       child: Column(
         children: [
           ListTile(
@@ -210,11 +271,11 @@ class _PostState extends State<Post> {
                 color: color,
                 onPressed: () {
                   if (!isLiked) {
+                    increamentLike();
                     setState(() {
                       isLiked = true;
                       color = Colors.red;
                     });
-
                     Scaffold.of(context).showSnackBar(
                       SnackBar(
                         backgroundColor: Colors.black,
@@ -231,6 +292,7 @@ class _PostState extends State<Post> {
                     );
                   }else{
                     setState(() {
+                      decreamentLike();
                       isLiked = false;
                       color = Colors.white;
                     });
@@ -255,6 +317,16 @@ class _PostState extends State<Post> {
             ],
           ),
           Container(
+            margin: EdgeInsets.only(left: 15, top: 5),
+            child: Row(
+              children: [
+                Text(likes.toString(), style: TextStyle(fontWeight: FontWeight.bold),),
+                SizedBox(width: 5,),
+                Text("Likes", style: TextStyle(fontWeight: FontWeight.bold),),
+              ],
+            ),
+          ),
+          Container(
             margin: EdgeInsets.fromLTRB(15, 8, 15, 15),
             child: Column(
               children: [
@@ -269,11 +341,6 @@ class _PostState extends State<Post> {
                         TextSpan(text: widget.post['caption']),
                       ]
                     ),)),
-
-                    // Expanded(child: Text('${widget.post['name']}   ${widget.post['caption']}',
-                    //     style:TextStyle(height: 1.4)
-                    //   ),
-                    // ),
                   ],
                 )
               ],
@@ -281,6 +348,19 @@ class _PostState extends State<Post> {
           ),
           Divider(height: 5,),
         ],
+      ),
+    )
+    :
+    Container(
+      padding: EdgeInsets.only(top: 80),
+      child: Center(
+        child: SizedBox(
+          height: 36, 
+          width: 36, 
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+          ),
+        ),
       ),
     );
   }

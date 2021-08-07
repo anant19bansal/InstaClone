@@ -76,6 +76,7 @@ class _FirstPageState extends State<FirstPage> {
             'num-followers':0,
             'num-following':0,
             'followers':[],
+            'posts-liked':[],
           });
         }
 

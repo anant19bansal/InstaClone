@@ -61,6 +61,7 @@ class _HomeMainPageState extends State<HomeMainPage> {
             'email': user['email'],
             'type': 'image',
             'postUrl': downloadUrl,
+            'num_likes': 0,
             'created_at': FieldValue.serverTimestamp(),
       });
       await _usersCollection.doc(user['id']).update({

@@ -29,30 +29,24 @@ class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClient
   int totalPosts = 0;
   @override
   void initState() {
-    // print('******************profile initializer called********************'); 
     super.initState();
     initialize();
   }
 
   initialize() async{
-    // print('initialize called');
+    print('initialize called');
     ref = await FirebaseFirestore.instance.collection('users');
     user = await ref.doc(user['id']).get();
     _followers = user['followers'];
-    // print(_followers);
     SharedPreferences _preferences = await SharedPreferences.getInstance();
-    _authUserId = _preferences.getString('id');
+    _authUserId = await _preferences.getString('id');
     if(_authUserId != user['id']){
       _isOtherUserProfile = true;
     }
     setState(() {
-      // print('setState inside initialize called');
       if(_followers.contains(_authUserId)){
         _isBeingFollowed = true;
       }
-      // print('Inside initialize');
-      // print(_isBeingFollowed);
-      // print(_followers);
       
       _numPosts = user['num-posts'];
       _numFollowers = user['num-followers'];
@@ -81,7 +75,6 @@ class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClient
     }
     setState(() {
       _numFollowers = (_isBeingFollowed)?_numFollowers-1:_numFollowers+1;
-      print(_isBeingFollowed);
       _isBeingFollowed = !_isBeingFollowed;
     });
   }
@@ -92,6 +85,16 @@ class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClient
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    if(user['id']==_authUserId){
+      ref.doc(_authUserId).get().then((document) {
+        if(document['num-following']!=_numFollowing || document['num-followers']!=_numFollowers){
+          setState(() {
+            _numFollowing = document['num-following'];
+            _numFollowers = document['num-followers'];
+          });
+        }
+      });
+    }
     return (_pageInitialized)?Scaffold(
       appBar: AppBar(
         elevation: 0,

@@ -59,6 +59,7 @@ class _SignUpState extends State<SignUp> {
             'num-followers':0,
             'num-following':0,
             'followers':[],
+            'posts-liked':[],
           });
         }
 
