@@ -32,7 +32,9 @@ _EditProfileState(this.user);
   late CollectionReference _usersCollection; 
   late FirebaseAuth _auth;
   late FirebaseStorage _storage;
-  late String _imgPath;
+  late String _imgUrl;
+  File? _imagePath;
+  bool _profileImageChanged = false;
 
   @override
   void initState() { 
@@ -42,7 +44,7 @@ _EditProfileState(this.user);
 
   initialize() async{
     try {
-      _imgPath = user['profile-pic'];
+      _imgUrl = user['profile-pic'];
       _auth = await FirebaseAuth.instance;
       _preferences = await SharedPreferences.getInstance();
       _usersCollection = await FirebaseFirestore.instance.collection('users');  
@@ -54,6 +56,14 @@ _EditProfileState(this.user);
 
   handleUpdate() async{
     try {
+      if(_profileImageChanged){
+        final String destination = "/users/avatar/avatar${DateTime.now().millisecondsSinceEpoch}";
+        final ref = await _storage.ref().child(destination);
+        final uploadTask = await ref.putFile(_imagePath!);
+        final downloadUrl = await _storage.ref(destination).getDownloadURL();
+        updateUserDatabaseWithImage(downloadUrl);
+      }
+
       String? userId = await _preferences.getString('id');
       if(userId!=null){
         await _usersCollection.doc(userId).update({
@@ -84,9 +94,25 @@ _EditProfileState(this.user);
     await _usersCollection.doc(user['id']).update({
       'profile-pic': downloadUrl,
     });
-    setState(() {
-      _imgPath = downloadUrl;
-    });
+    // WriteBatch batch = FirebaseFirestore.instance.batch();
+    // FirebaseFirestore.instance.collection("posts").where('email', isEqualTo: ).get().then((querySnapshot) {
+    //   querySnapshot.docs.forEach((document) {
+    //     try {
+
+    //       // Only if DocumentID has only numbers
+    //       if (cartNumbers.contains(int.parse(document.id))) {
+    //         batch.update(document.reference,
+    //             {"quantity": document.data()["quantity"] - 1});
+    //       }
+    //     } on FormatException catch (error) {
+
+    //       // If a document ID is unparsable. Example "lRt931gu83iukSSLwyei" is unparsable.
+    //       print("The document ${error.source} could not be parsed.");
+    //       return null;
+    //     }
+    //   });
+    //   return batch.commit();
+    // });
   }
 
   selectImageSource(ImageSource source) async {
@@ -95,15 +121,15 @@ _EditProfileState(this.user);
       final picker = ImagePicker();
       XFile? _profileImage = await picker.pickImage(source: source);
       if(_profileImage!=null){
-        final imagePath = File(_profileImage.path); 
-        print (imagePath);
-        final String destination = "/users/avatar/avatar${DateTime.now().millisecondsSinceEpoch}";
-        final ref = await _storage.ref().child(destination);
-        final uploadTask = await ref.putFile(imagePath);  
-        print('fine till here*************');
-        final downloadUrl = await _storage.ref(destination).getDownloadURL();
-        print(downloadUrl);
-        updateUserDatabaseWithImage(downloadUrl);
+        _imagePath = await File(_profileImage.path);
+        setState(() {
+          _profileImageChanged = true;
+        });
+        // final String destination = "/users/avatar/avatar${DateTime.now().millisecondsSinceEpoch}";
+        // final ref = await _storage.ref().child(destination);
+        // final uploadTask = await ref.putFile(_imagePath!);
+        // final downloadUrl = await _storage.ref(destination).getDownloadURL();
+        // updateUserDatabaseWithImage(downloadUrl);
       }
        
     } catch (e) {
@@ -140,14 +166,6 @@ _EditProfileState(this.user);
         ),
       ),
     ); 
-    
-    //store the selected image path in variable
-    //set state to indicate that image is changed
-    //display the image on the circular avatar 
-  }
-
-  resetPassword(){
-
   }
 
   @override
@@ -187,10 +205,19 @@ _EditProfileState(this.user);
                 children: [
                   Container(
                     margin: EdgeInsets.only(top: 15),
-                    child: CustomCircularAvatar(
+                    // child: CustomCircularAvatar(
+                    //   radius: 50,
+                    //   storyRing: false, 
+                    //   imgPath: _imgUrl,
+                    // ),
+                    child: (_profileImageChanged)?CircleAvatar(
+                      radius: 50,
+                      backgroundImage: FileImage(_imagePath!),
+                    )
+                    :CustomCircularAvatar(
                       radius: 50,
                       storyRing: false, 
-                      imgPath: _imgPath,
+                      imgPath: _imgUrl,
                     ),
                   ),
                   Container(
@@ -260,7 +287,9 @@ _EditProfileState(this.user);
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 3),
                     child: TextButton(
-                      onPressed: resetPassword, 
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/reset-password');
+                      }, 
                       child: Text('Reset Password',
                         style: TextStyle(
                           fontSize: 18,

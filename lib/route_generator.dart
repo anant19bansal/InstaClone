@@ -5,6 +5,7 @@ import 'package:insta/app_screens/editProfile.dart';
 import 'package:insta/app_screens/firstPage.dart';
 import 'package:insta/app_screens/homeMainPage.dart';
 import 'package:insta/app_screens/logIn.dart';
+import 'package:insta/app_screens/resetPassword.dart';
 import 'package:insta/app_screens/signUp.dart';
 import 'package:insta/screenArguments.dart';
 
@@ -40,6 +41,8 @@ class RouteGenerator{
         }else{
           return MaterialPageRoute(builder: (context) => Container(child: Center(child: Text('Error in routing, should not have landed here 3')),));
         }
+      case '/reset-password':
+        return MaterialPageRoute(builder: (context) => ResetPassword());
       default:
         return MaterialPageRoute(builder: (context) => LogIn());
     }
