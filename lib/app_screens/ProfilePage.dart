@@ -123,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClient
         ]
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('posts').where('email', isEqualTo: user['email']).orderBy('created_at', descending: true).snapshots(),
+        stream: FirebaseFirestore.instance.collection('posts').where('user_id', isEqualTo: user['id']).orderBy('created_at', descending: true).snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if ((snapshot.hasData && snapshot.data!=null)) {
             return Container(

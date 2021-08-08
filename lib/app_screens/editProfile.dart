@@ -64,6 +64,21 @@ _EditProfileState(this.user);
         updateUserDatabaseWithImage(downloadUrl);
       }
 
+      if(_name.text.isNotEmpty){
+        WriteBatch batch = FirebaseFirestore.instance.batch();
+        FirebaseFirestore.instance.collection("posts").where('user_id', isEqualTo:user['id']).get().then((querySnapshot) {
+          querySnapshot.docs.forEach((document) {
+            try {
+                batch.update(document.reference,
+                    {"name": _name.text});
+            }catch (error) {
+              print("************Error in batch update of name in edit profile: $error");
+            }
+          });
+          return batch.commit();
+        });
+      }
+
       String? userId = await _preferences.getString('id');
       if(userId!=null){
         await _usersCollection.doc(userId).update({
@@ -94,25 +109,18 @@ _EditProfileState(this.user);
     await _usersCollection.doc(user['id']).update({
       'profile-pic': downloadUrl,
     });
-    // WriteBatch batch = FirebaseFirestore.instance.batch();
-    // FirebaseFirestore.instance.collection("posts").where('email', isEqualTo: ).get().then((querySnapshot) {
-    //   querySnapshot.docs.forEach((document) {
-    //     try {
-
-    //       // Only if DocumentID has only numbers
-    //       if (cartNumbers.contains(int.parse(document.id))) {
-    //         batch.update(document.reference,
-    //             {"quantity": document.data()["quantity"] - 1});
-    //       }
-    //     } on FormatException catch (error) {
-
-    //       // If a document ID is unparsable. Example "lRt931gu83iukSSLwyei" is unparsable.
-    //       print("The document ${error.source} could not be parsed.");
-    //       return null;
-    //     }
-    //   });
-    //   return batch.commit();
-    // });
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    FirebaseFirestore.instance.collection("posts").where('user_id', isEqualTo:user['id']).get().then((querySnapshot) {
+      querySnapshot.docs.forEach((document) {
+        try {
+            batch.update(document.reference,
+                {"profile_pic": downloadUrl});
+        }catch (error) {
+          print("************Error in batch update in edit profile: $error");
+        }
+      });
+      return batch.commit();
+    });
   }
 
   selectImageSource(ImageSource source) async {
@@ -124,12 +132,7 @@ _EditProfileState(this.user);
         _imagePath = await File(_profileImage.path);
         setState(() {
           _profileImageChanged = true;
-        });
-        // final String destination = "/users/avatar/avatar${DateTime.now().millisecondsSinceEpoch}";
-        // final ref = await _storage.ref().child(destination);
-        // final uploadTask = await ref.putFile(_imagePath!);
-        // final downloadUrl = await _storage.ref(destination).getDownloadURL();
-        // updateUserDatabaseWithImage(downloadUrl);
+        });  
       }
        
     } catch (e) {
@@ -205,11 +208,6 @@ _EditProfileState(this.user);
                 children: [
                   Container(
                     margin: EdgeInsets.only(top: 15),
-                    // child: CustomCircularAvatar(
-                    //   radius: 50,
-                    //   storyRing: false, 
-                    //   imgPath: _imgUrl,
-                    // ),
                     child: (_profileImageChanged)?CircleAvatar(
                       radius: 50,
                       backgroundImage: FileImage(_imagePath!),
@@ -314,22 +312,22 @@ _EditProfileState(this.user);
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: bottomPadding),
-                    child: TextField(
-                      controller: _phone,
-                      cursorWidth: 1,
-                      cursorColor: Colors.white,
-                      style: TextStyle(
-                        fontSize: 18
-                      ),
-                      decoration: InputDecoration(
-                        hintText: 'Phone',
-                        labelText: 'Phone',
-                        labelStyle: TextStyle(height: 0.5),
-                      ),
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: EdgeInsets.only(bottom: bottomPadding),
+                  //   child: TextField(
+                  //     controller: _phone,
+                  //     cursorWidth: 1,
+                  //     cursorColor: Colors.white,
+                  //     style: TextStyle(
+                  //       fontSize: 18
+                  //     ),
+                  //     decoration: InputDecoration(
+                  //       hintText: 'Phone',
+                  //       labelText: 'Phone',
+                  //       labelStyle: TextStyle(height: 0.5),
+                  //     ),
+                  //   ),
+                  // ),
                   Padding(
                     padding: EdgeInsets.only(bottom: bottomPadding),
                     child: TextField(

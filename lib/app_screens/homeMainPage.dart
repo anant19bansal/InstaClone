@@ -63,6 +63,7 @@ class _HomeMainPageState extends State<HomeMainPage> {
             'postUrl': downloadUrl,
             'num_likes': 0,
             'created_at': FieldValue.serverTimestamp(),
+            'user_id':user['id'],
       });
       await _usersCollection.doc(user['id']).update({
         'num-posts':FieldValue.increment(1),
