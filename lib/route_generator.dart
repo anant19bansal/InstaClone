@@ -3,11 +3,13 @@ import 'package:insta/app_screens/ProfilePage.dart';
 import 'package:insta/app_screens/dmPage.dart';
 import 'package:insta/app_screens/editProfile.dart';
 import 'package:insta/app_screens/firstPage.dart';
+import 'package:insta/app_screens/forgotPassword.dart';
 import 'package:insta/app_screens/homeMainPage.dart';
 import 'package:insta/app_screens/logIn.dart';
 import 'package:insta/app_screens/resetPassword.dart';
 import 'package:insta/app_screens/signUp.dart';
 import 'package:insta/screenArguments.dart';
+
 
 class RouteGenerator{
   static Route<dynamic> generateRoute(RouteSettings settings){
@@ -43,6 +45,8 @@ class RouteGenerator{
         }
       case '/reset-password':
         return MaterialPageRoute(builder: (context) => ResetPassword());
+      case '/forgot-password':
+        return MaterialPageRoute(builder: (context) => ForgotPassword());
       default:
         return MaterialPageRoute(builder: (context) => LogIn());
     }

@@ -119,7 +119,10 @@ class _LogInState extends State<LogIn> {
                   Container(
                     margin: EdgeInsets.fromLTRB(0, 0, 13, 0),
                     child: TextButton(
-                        onPressed: () {}, child: Text('Forgot Password?')),
+                        onPressed: () {
+                          Navigator.of(context).pushNamed('/forgot-password');
+                        }, 
+                        child: Text('Forgot Password?')),
                   ),
                 ],
               ),
